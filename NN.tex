@@ -1,0 +1,184 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Stylish Article
+% LaTeX Template
+% Version 2.0 (13/4/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Mathias Legrand (legrand.mathias@gmail.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[fleqn,10pt]{SelfArx} % Document font size and equations flushed left
+
+\usepackage{lipsum} % Required to insert dummy text. To be removed otherwise
+\usepackage{datetime}
+
+%----------------------------------------------------------------------------------------
+%	COLUMNS
+%----------------------------------------------------------------------------------------
+
+\setlength{\columnsep}{0.55cm} % Distance between the two columns of text
+\setlength{\fboxrule}{0.75pt} % Width of the border around the abstract
+
+%----------------------------------------------------------------------------------------
+%	COLORS
+%----------------------------------------------------------------------------------------
+
+\definecolor{color1}{RGB}{0,0,90} % Color of the article title and sections
+\definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
+
+%----------------------------------------------------------------------------------------
+%	HYPERLINKS
+%----------------------------------------------------------------------------------------
+
+\usepackage{hyperref} % Required for hyperlinks
+\hypersetup{hidelinks,colorlinks,breaklinks=true,urlcolor=color2,citecolor=color1,linkcolor=color1,bookmarksopen=false,pdftitle={Title},pdfauthor={Author}}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE INFORMATION
+%----------------------------------------------------------------------------------------
+
+\JournalInfo{Zusammenfassung Neuronale Netze SS 2015} % Journal information
+\CurrentStatus{Stand: \today, \currenttime Uhr} % Date of last modification
+\Archive{} % Additional notes (e.g. copyright, DOI, review/research article)
+
+\PaperTitle{Neuronale Netze} % Article title
+
+\Authors{Benjamin Rupp\textsuperscript{1}*, Sophie von Schmettow\textsuperscript{2}} % Authors
+%\affiliation{\textsuperscript{1}\textit{Department of Biology, University of Examples, London, United Kingdom}} % Author affiliation
+%\affiliation{\textsuperscript{2}\textit{Department of Chemistry, University of Examples, London, United Kingdom}} % Author affiliation
+%\affiliation{*\textbf{Corresponding author}: john@smith.com} % Corresponding author
+
+\Keywords{Keyword1 --- Keyword2 --- Keyword3} % Keywords - if you don't want any simply remove all the text between the curly brackets
+\newcommand{\keywordname}{Keywords} % Defines the keywords heading name
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\Abstract{...}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\flushbottom % Makes all text pages the same height
+
+\maketitle % Print the title and abstract box
+
+\tableofcontents % Print the contents section
+
+\thispagestyle{empty} % Removes page numbering from the first page
+%----------------------------------------------------------------------------------------
+%	UTILS
+%----------------------------------------------------------------------------------------
+
+%\begin{figure*}[ht]\centering % Using \begin{figure*} makes the figure take up the entire width of the page
+%\includegraphics[width=\linewidth]{view}
+%\caption{Wide Picture}
+%\label{fig:view}
+%\end{figure*}
+
+
+
+%\begin{equation}
+%\cos^3 \theta =\frac{1}{4}\cos\theta+\frac{3}{4}\cos 3\theta
+%\label{eq:refname2}
+%\end{equation}
+
+
+
+%\begin{enumerate}[noitemsep] % [noitemsep] removes whitespace between the items for a compact look
+%\item First item in a list
+%\item Second item in a list
+%\item Third item in a list
+%\end{enumerate}
+
+
+
+%\begin{figure}[ht]\centering
+%\includegraphics[width=\linewidth]{results}
+%\caption{In-text Picture}
+%\label{fig:results}
+%\end{figure}
+
+%Reference to Figure \ref{fig:results}.
+
+
+%\begin{table}[hbt]
+%\caption{Table of Grades}
+%\centering
+%\begin{tabular}{llr}
+%\toprule
+%\multicolumn{2}{c}{Name} \\
+%\cmidrule(r){1-2}
+%First name & Last Name & Grade \\
+%\midrule
+%John & Doe & $7.5$ \\
+%Richard & Miles & $2$ \\
+%\bottomrule
+%\end{tabular}
+%\label{tab:label}
+%\end{table}
+
+
+
+%\begin{description}
+%\item[Word] Definition
+%\item[Concept] Explanation
+%\item[Idea] Text
+%\end{description}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\section{Einführung} 
+
+
+%Geschichte, Terminologie, Biologisches Neuron hier
+% Bestandteilte neuronaler Netze
+% Lernregeln?
+
+
+%------------------------------------------------
+
+\section{Klassifikation/Mustererkennung}
+
+
+%------------------------------------------------
+
+\section{Lernende Vektorquantisierung (LVQ) \& Verwandte Techniken}
+
+
+\section{Das Perzeptron (+ Biological Neurons)}
+\section{Features}
+\section{Backpropagation}
+\section{Learning Feaures: Autoencoders and Bottleneck Features}
+\section{Deep Learning}
+\section{Training Neural Networks with Reinforcement Learning}
+\section{Hopfield Nets and Boltzmann Machines}
+\section{Recurrent Neural Networks}
+\section{Deep Learning in Computer Vision}
+
+
+%----------------------------------------------------------------------------------------
+%	REFERENCE LIST
+%----------------------------------------------------------------------------------------
+\phantomsection
+\bibliographystyle{unsrt}
+\bibliography{sample}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
