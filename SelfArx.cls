@@ -25,12 +25,12 @@
 %	VARIOUS USEFUL PACKAGES
 %----------------------------------------------------------------------
 
-\RequirePackage[ansinew]{inputenc}
+\RequirePackage[utf8]{inputenc}
 \RequirePackage{amsmath,amsfonts,amssymb}
 \RequirePackage{graphicx,xcolor}
 \RequirePackage[ngerman]{babel}
 \RequirePackage{booktabs}
-\RequirePackage[T1]{fontenc}
+%\RequirePackage[T1]{fontenc}
 
 %----------------------------------------------------------------------
 %	MARGINS	
