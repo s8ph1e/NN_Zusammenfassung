@@ -45,6 +45,15 @@
 \hypersetup{hidelinks,colorlinks,breaklinks=true,urlcolor=color2,citecolor=color1,linkcolor=color1,bookmarksopen=false,pdftitle={Title},pdfauthor={Author}}
 
 %----------------------------------------------------------------------------------------
+%	MISCELLANEOUS
+%----------------------------------------------------------------------------------------
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+
+\newtcbtheorem[number within=section]{mytheo}{}%
+{colback=color1!5,colframe=color1!35!color1,fonttitle=\bfseries}{th}
+
+%----------------------------------------------------------------------------------------
 %	ARTICLE INFORMATION
 %----------------------------------------------------------------------------------------
 
@@ -145,15 +154,6 @@
 
 % http://www.blickinsbuch.de/3486243500&account=4907031511
 \section{Einführung} 
-
-% Motivation
-% Neurobiologische Grundlagen
-% Geschichte
-% Terminologie, Biologisches Neuron hier
-% Bestandteilte neuronaler Netze
-% Konzepte des Konnektionusmus/Lernregeln
-% Komponenten neuronaler Modelle
-% Was es so für neuronale Modelle gibt
 % bis einschließlich Kap. 6 von Zell
 \input{chapters/ch01_einfuehrung}
 
