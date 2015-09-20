@@ -107,7 +107,7 @@ Viele zukünftige Anwendungssysteme werden wohl konventionelle algorithmische
 Komponenten besitzen, Module, die neuronal realisiert sind, und andere, die
 symbolisch schließen können. Die Integration dieser Komponenten ist allerdings
 eine große Herausforderung.
-\subsection*{Eigenschaften von NN}
+\subsection{Eigenschaften von NN}
 Positive Eigenschaften:
 \begin{itemize}[noitemsep]
 \item Lernfähigkeit: Neuronale Netze werden zumeist nicht programmiert, sondern
@@ -242,7 +242,7 @@ Verbindungen als Ergebnis der wiederholten Präsentation von Trainingsmustern.
 Oft wird dabei versucht, den Fehler zwischen erwarteter Ausgabe und
 tatsächlicher Ausgabe für alle Trainingsmuster zu minimieren. 
 \end{itemize}
-
+\noindent
 Je nach ihrer Position im Netzwerk unterscheidet man drei Zelltypen:
 \begin{itemize}[noitemsep]
 \item Eingabeneuronen (\textit{input units}): Zellen der Eingabeschicht, leiten die Eingabe in das Netz weiter
@@ -251,15 +251,106 @@ Je nach ihrer Position im Netzwerk unterscheidet man drei Zelltypen:
 außenstehenden Betrachter nicht zu sehen
 \end{itemize}
 
-Die Anzahl der Stufen neuronaler Netze wird (wie viele andere Begriffe auch) leider in der
-Literatur über neuronale Netze nicht einheitlich verwendet. Hier wird ein Netz als n-stufig
-bezeichnet, wenn es n Schichten trainierbarer Verbindungen hat. Derartige Netze haben dann
-n+1 Schichten von Neuronen, davon n-1 Schichten verdeckter Neuronen (hidden units). Diese
-Bezeichnungsweise setzt sich wohl derzeit deshalb allgemein durch, weil die Schichten
-trainierbarer Gewichte die eigentliche Leistungsfähigkeit der verschiedenen Netztopologien
-ausmachen. Früher wurde auch häufig der Begriff n-stufig für ein Netzwerk mit n Schichten
-von Neuronen benutzt. Zur Vermeidung von Irrtümern wird hier oft auch die eindeutige
-Bezeichnung "Netze mit n Stufen trainierbarer Verbindungen" verwendet.
+Hier: ein n-stufiges Netz besitzt n Schichten trainierbarer Verbindungen hat (d.h. n+1 Schichten von Neuronen, davon n-1 Schichten verdeckter Neuronen)
+
+\subsection{Beispiel: XOR-Netzwerk}
+\subsection{Aktivierungszustand}
+Aktivierungszustand eines Neurons $i$ zum Zeitpunkt $t$: $a_i(t)$ 
+\begin{itemize}
+\item (quasi-) kontinuierliche Wertebereiche: verschiedene Modelle 
+\begin{itemize}
+\item alle reellen Zahlen (reals, floats) als Werte
+\item Die meisten Modelle beschränken die Aktivierung auf ein
+Intervall, beispielsweise $[0, 1]$ oder $[-1, 1]$, da diese Modelle
+meistens eine nichtlineare, häufig sigmoide Aktivierungsfunktion und die Identität
+als Ausgabefunktion verwenden, wodurch die Ausgabe identisch mit der
+Aktivierung wird und der Wertebereich der Aktivierungsfunktion den Wertebereich
+des Aktivierungszustandes angibt.
+\end{itemize}
+\item diskrete Wertebereiche: diskrete Aktivierungszustände, welche in einer Implementierung als binäre Werte, beispielsweise $\{0, 1\}$, $\{-1, 1\}$ oder auch $\{+, -\}$, gespeichert und verarbeitet werden.
+\end{itemize}
+
+\subsection{Ausgabefunktion}
+Die Ausgabefunktion berechnet die Ausgabe einer Zelle aus ihrer Aktivierung nach
+der Formel $o_i(t) = f_{out}(a_i(t))$
+Die meisten neuronalen Modelle verwenden eine nichtlineare Funktion, die aus der
+Netzeingabe die neue Ausgabe berechnet. Oft ist diese nichtlineare Funktion
+Bestandteil der Aktivierungsfunktion, wodurch für die Ausgabefunktion die
+Identitätsfunktion gewählt werden kann, in anderen Fällen realisiert die
+Ausgabefunktion diese nichtlineare Funktion. Vgl. Abbildung \ref{fig:ausgabefunktionen}.
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch01_Ausgabefunktion.png}
+	\caption{Häufig verwendete Ausgabefunktionen}
+	\label{fig:ausgabefunktionen}
+\end{figure}
+
+\subsection{Verbindungsnetzwerke}
+Üblicherweise wird das Verbindungsnetzwerk der Zellen in
+einer Matrixschreibweise angegeben: $w_{ij}$ ist eine Verbindung von Zelle $i$ nach Zelle $j$. Für die Verbindungsmatrix $\textbf{W} = [w_{ij}]$ gilt dann: ein Eintrag in der Matrix $\textbf{W}$ mit
+\begin{itemize}
+\item $w_{ij} = 0$ gibt an, daß keine Verbindung zwischen $i$ und $j$ existiert,
+\item $w_{ij} < 0$ gibt an, daß Neuron $i$ seinen Nachfolger $j$ durch ein Gewicht der
+Stärke $|w_{ij}|$ hemmt,
+\item $w_{ij} > 0$ gibt an, daß Neuron $i$ seinen Nachfolger $j$ durch ein Gewicht der
+Stärke $|w_{ij}|$ anregt.
+\end{itemize}
+%In der Implementierung in einem Software-Simulator wird häufig eine Speicherung der Verbindungsgewichte gewählt, bei der nur tatsächlich vorhandene Gewichte Speicherplatz benötigen, z.B. eine Zeigerstruktur, bei der jedes Neuron eine verkettete Liste aller Eingangsgewichte besitzt, von denen jedes wiederum einen Zeiger auf das Neuron besitzt, von dem die Verbindung ausgeht. Diese Art der Implementierung über sogenannte rückwärtsgerichtete Adjazenzlisten hat sich auf Workstations weitgehend durchgesetzt. Bei einer Realisierung als Matrix benötigt ein Netz mit n Neuronen nämlich immer Speicherplatz der Größe n^2 . Dies ist besonders für feedforward-Netze mit mehreren Ebenen eine große Verschwendung. 
+
+Folgende Topologien neuronaler Netze kommen besonders häufig in Simulationen vor:
+\begin{itemize}
+\item \textbf{feedforward-Netze:} enthalten keine Zyklen
+\item \textbf{feedback-Netze:} enthalten Zyklen (feedback)
+\item \textbf{hierarchische Netze:} Gliederung in mehrere Ebenen
+\end{itemize}
+
+\subsection{Propagierungsregel}
+gibt die Gesamteingabe aller Nachbarzellen an und hat bei sehr vielen Modellen die Form:\\
+$net_j(t) = \sum_i o_i(t)w_{ij} = O(t)W_j$ (gewichtete Summe)\\
+Dabei ist $O(t) = (o_1(t),...,o_n(t))$ ein Zeilenvektor, $W_j$ die $j$-te Spalte der Gewichtsmatrix $\textbf{W}$:\\
+$Net(t) = O(t)W =  (o_1(t),...,o_n(t))\begin{pmatrix}
+w_{11} & ... & w_{1m}\\
+w_{n1} & ... & w_{nm}\\
+\end{pmatrix}$
+
+\subsection{Aktivierungsfunktion}
+Berechnet einen Aktivierungszustand aus altem Zustand und Eingabewerten\\
+$a_i(t+1) = f_{act}(a_i(t), net_i(t), \theta_i)$
+\begin{itemize}
+\item deterministische Aktivierungsfunktion $f$: Ergebnis eindeutig durch die Eingabe bestimmt
+\item stochastische Aktivierungsfunktion $f$: Ergebnis durch eine Zufallsverteilung abhängig von der Eingabe bestimmt
+\end{itemize}
+
+\subsection{Lernregel}
+
+Theoretisch mögliche Arten des Lernens:
+\begin{itemize}
+\item[1.]Entwicklung neuer Verbindungen
+\item[2.]Löschen existierender Verbindungen
+\item[3.]Modifikation der Stärke $w_{ij}$ von Verbindungen
+\item[4.]Entwicklung neuer Zellen
+\end{itemize}
+1. und 2. kann durch 3. approximiert werden:\\
+Neue Verbindung: $w_{ij} = 0 \rightarrow w_{ij} \neq 0$\\
+Löschen: $w_{ij} \neq 0 \rightarrow w_{ij} = 0$
+Aktuelle Lernverfahren arbeiten meist nur durch Modifikation der Verbindungen.
+Tabelle \ref{tab:lernregeln} zeigt wichtige Lernregeln.
+\begin{table}
+\centering
+\begin{tabular}{|l|}
+	\hline
+	Hebb'sche Lernregel: \\
+	\hline
+	Delta-Regel (Widrow-Hoff-Regel):\\
+	\hline
+	Grossberg's Regel:\\
+	\hline
+	Backpropagation (verallgem. Delta-Regel):\\
+	\hline
+\end{tabular}
+\caption{Wichtige Lernregeln}
+\label{tab:lernregeln}
+\end{table}
+
 \section*{Komponenten neuronaler Modelle}
 % K
 % Was es so für neuronale Modelle gibt
