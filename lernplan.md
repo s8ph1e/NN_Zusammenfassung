@@ -21,6 +21,8 @@
 		+ classification figure of merit
 	+ Aktivierungsfunktionen
 		+ radial basis function kernel ??
+		+ Rectified Linear Unit (ReLU)
+		+ Softplus
 	+ Gewichte einstellen
 		+ Backpropagation
 		+ (L-)BFGS
@@ -37,7 +39,7 @@
 			+ Scheduling Methode
 			+ NewBob Methode
 			+ Exponentially Decying
-			+ gewichtsabhängige Methodne
+			+ gewichtsabhängige Methoden
 				+ AdaGrad
 				+ Resilient Propagation
 				+ Weiterentwicklung Mean Square Resilient Propagation
