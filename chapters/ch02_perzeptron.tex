@@ -115,7 +115,7 @@ Die Entscheidungsgrenze ist damit für $g(\vec{x}) = 0$ definiert. Sie entsprich
 \[
 	H: g(\vec{x}) = \sum_{i=1}^{n} w_i x_i + w_0 = \vec{w}^T \vec{x} + w_0 = 0
 \]
-Der normierte Vektor $\vec{w}$ gibt die Richtung und der Bias $w_0$ die Lage dieser Entscheidungsgrenze an. Die Hpyerebene $H$ trennt den Merkmalsraum in zwei Hälften auf; Entscheidungsregion $R_1$ für $C_1$ und $R_2$ für $C_2$. Liegt $\vec{x}$ in $R_1$ ($g(x) \ge 0$), zeigt auch der Normalenvektor $\vec{w}$ in $R_1$. Abbildung \ref{fig:lineare-entscheidunsfunktion} zeigt dies. Für den Abstand $r$ zwischen Hyperebene $H$ und Merkmalsvektor $\vec{x}$ gilt:
+Der normierte Vektor $\vec{w}$ gibt die Richtung und der Bias $w_0$ die Lage dieser Entscheidungsgrenze an. Die Hyperebene $H$ trennt den Merkmalsraum in zwei Hälften auf; Entscheidungsregion $R_1$ für $C_1$ und $R_2$ für $C_2$. Liegt $\vec{x}$ in $R_1$ ($g(x) \ge 0$), zeigt auch der Normalenvektor $\vec{w}$ in $R_1$. Abbildung \ref{fig:lineare-entscheidunsfunktion} zeigt dies. Für den Abstand $r$ zwischen Hyperebene $H$ und Merkmalsvektor $\vec{x}$ gilt:
 \[
 	r = \frac{g(x)}{||w||}
 \]
@@ -164,9 +164,12 @@ Im Gegensatz zur Entscheidungsgrenze im Zwei-Klassen-Fall ist hier nicht der Gew
 	\label{fig:linear-machine}
 \end{figure}
 
+
 \subsubsection*{Least Squares}
+ToDo
+
 \subsubsection*{Fisher's linear discriminant}
-\subsubsection*{Perzeptron Algorithmus}
+ToDo
 
 
 % -----------------------------------------------------------------------
@@ -204,27 +207,168 @@ Weitere Stufen besitzen in diesem Modell keine zusätzliche Fähigkeiten mehr.
 
 % -----------------------------------------------------------------------
 % -----------------------------------------------------------------------
-\section*{Perceptron Learning}
-% Zell: Kapitel 7.6
-\subsection*{(Rosenblatt) Perzeptron Algorithmus}
-% Zell: Kapitel 7.2 (Ende)
+\section*{Lernverfahren}
+Unter einem \emph{Lernverfahren} versteht man einen Algorithmus, der dem Neuronalen Netz beibringt, für einen gegebenen Merkmalsvektor $\vec{x}$ den erwarteten Wert $t$ am Ausgang $o$ zu produzieren. Ist $o = t$, dann hat das Netz erfolgreich gelernt.
+
+Um ein Neuronales Netz zu trainieren werden dessen Gewichte angepasst. Sie \textit{speichern} das Wissen des Netzes. Diese Gewichte werden während der Traingsphase laufend angepasst. Abbildung \ref{fig:perzeptron-learning} zeigt den schematischen Lernprozess eines Perzeptrons.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch02_perzeptron-learning.pdf}
+	\caption{Schematischer Lernprozess eines Neuronalen Netzes.}
+	\label{fig:perzeptron-learning}
+\end{figure}
+
+Man unterscheidet zwei Klassen von Lernalgorithmen:
+\begin{itemize}
+	\item \emph{überwachte Methoden} - Beim überwachten Lernen wird jedem Merkmalsvektor ein erwartetes Ergebnis zugeordnet. Lernalgorithmen beobachten die Abweichung zwischen berechnetem und erwartetem Ergebnis. Die Gewichte werden entsprechend der Größe der Abweichung angepasst. Ein solches Verfahren wird deshalb auch als \emph{Learning with a teacher} bezeichnet.
+	\item \emph{unüberwachte Methoden} - Beim unüberwachten Lernen ist der genaue Ausgabewert, welcher aufgrund eines Merkmalsvektors berechnet werden soll, sowie die Anzahl und Lage der Cluster innerhalb des Merkmalsraums unbekannt. Die Trainingsmenge besteht lediglich aus Eingabemustern. Das Netzwerk muss deshalb selbst (und ohne "`teacher"') in der Lage sein, eine Klassifikation vorzunehmen. \\
+	Z.B.: \emph{Self organizing maps} (SOMs)
+\end{itemize}
+
+Das \emph{überwachte} Lernen wird weiter in zwei Kategorien unterteilt:
+\begin{itemize}
+	\item \emph{reinforcement learning} - Hier ist nach jeder Berechnung der Ausgabe nur bekannt, ob das Netz das korrekte Ergebnis liefert oder nicht. Aufgrund dieser Informationen werden die Gewichte angepasst. Hier kann \emph{nur der Merkmalsvektor} für die Gewichtsanpassung verwendet werden.
+	\item \emph{error correction} - Beim Lernen mit error correction ist die Gewichtsänderung vom Merkmalsvektor \emph{und} der Stärke der Abweichung zum gewünschten Ausgabwert abhängig.
+\end{itemize}
+
+\subsection*{Hebbsche Lernregel}
+Die \emph{Hebbsche Lernregel} ist die älteste und einfachste Lernregel für Neuronale Netze. Sie besagt, dass das Gewicht zwischen zwei Einheiten dann verändert wird, wenn beide gleichzeitig aktiv sind:
+\[
+	\Delta w_{ij} = \eta \cdot a_i \cdot o_j
+\]
+Dabei ist $\Delta w_{ij}$ die Gewichtsänderung von Neuron $i$ zu Neuron $j$, $\eta$ die Lernrate, welche den Grad der Änderung bestimmt, $a_i$ die Aktivierung von Neuron $i$ und $o_j$ die Ausgabe von Neuron $j$, welches mit Neuron $i$ verbunden ist.
+
+\subsection*{Perzeptron Lernalgorithmus}
+Der Perzeptron Lernalgorithmus basiert auf der Hebbschen Regel. Gegeben ist eine Menge markierter Daten:
+\[
+	(x,t) \in X \times \{0,1\}
+\]
+Gesucht werden jene Gewichte $\hat{w}$, für die das Perzeptron alle Daten korrekt zuordnet.
+
+Der Algorithmus berechnet für jeden Merkmalsvektor $x$ der Datenmenge $X$ die Ausgabe $o_x$ des Perzeptrons als gewichtete Summe der einzelnen Merkmale $x_j$:
+\[
+	o_x = \varphi(w \cdot x) = \varphi( \sum_{j=0}^{m} w_j x_j)
+\]
+Dabei ist $\varphi$ die Aktivierungsfunktion des Perzeptrons und $m$ die Dimension des Merkmalsraumes\footnote{Mit Bias-Trick ist $m = \text{Dimension Merkmalsraum} + 1$.}
+
+Für das Anpassen der Gewichte gilt dann:
+\begin{align*}
+	&w_{t+1} =
+	\begin{cases}
+		w_{t} &\text{wenn } o_x = t_x \\
+		w_{t} - x &\text{wenn } o_x = 1 \text{ und } t_x = 0\\
+		w_{t} + x &\text{wenn } o_x = 0 \text{ und } t_x = 1
+	\end{cases} \\
+	&\text{alternativ auch geschrieben als:} \\
+	&w_{t+1} = w_{t} + (t_x - o_x) x
+\end{align*}
+Wobei $w_{t}$ das aktuelle und $w_{t+1}$ das neue Gewicht ist. Entspricht die Ausgabe $o_x$ dem erwarteten Wert $t_x$, bleibt das Gewicht unverändert. Ist $o_x = 1$, sollte aber $0$ sein, wird der Merkmalsvektor abgezogen (Gewicht wird vermindert). Ist $o_x = 0$, sollte jedoch $1$ sein, wird er hinzuaddiert (Gewicht wird erhöht).
+Dieser Trainingsvorgang wird so lange wiederholt, bis das Perzeptron alle Daten korrekt klassifiziert hat und damit $\hat{w}$ gefunden wurde.
+
+Der Perzeptron Lernalgorithmus konvergiert in endlicher Zeit, wenn die Trainingsdaten linear separierbar sind (\emph{Perzeptron-Konvergenz-Theorem}). Damit kann das Perzeptron in endlicher Zeit all das lernen, was es repräsentieren kann.
+
+Es handelt sich dabei um einen Lernalgorithmus des \emph{überwachten Lernens} mit Verstärkung (\emph{reinforcement learning}).
+
+\subsubsection*{Pocket Perceptron Algorithm}
+Ist ein Problem nicht linear separierbar, terminiert der Perzeptron Algorithmus nicht. In vielen Fällen ist es jedoch ausreichend, bei nicht pefekt linear separierbaren Problemen davon auszugehen, dass diese linear separierbar sind, weil die meisten Punkte im Merkmalsraum trotzdem richtig klassifiziert werden.
+Hierfür gibt es eine Variante des Perzeptron Algorithmus: Den \emph{Pocket Perceptron Algorithm}. Dieser geht prinzipiell genau so vor wie der normale Perzeptron Algorithmus. Er merkt sich jedoch den bisher besten Gewichtsvektor.\footnote{Der beste Gewichtsvektor wird in die "`Tasche"' gesteckt. Daher der Name des Algorithmus.} Am Ende bleibt so jener Gewichtsvektor übrig, welcher am wenigsten Beispiele falsch klassifiziert.
+
+\subsection*{Delta-Regel}
+Die Delta-Regel (auch \emph{Widrow-Hoff-Regel} genannt) beruht auf dem Vergleich zwischen der gewünschten Ausgabe $t_{\Omega}$ und der tatsächlich beobachteten Ausgabe $o_{\Omega}$ eines Ausgabeneurons bzw. der tatsächlich beobachteten Aktivierung $a_{\Omega}$\footnote{Abhängig davon, ob im Teaching Input $t_{\Omega}$ die gewünschte \emph{Aktivierung} oder die gewünschte \emph{Ausgabe} hinterlegt ist.}:
+\begin{align*}
+	&\delta = t_{\Omega} - o_{\Omega} \\
+	&\delta = t_{\Omega} - a_{\Omega}
+\end{align*}
+Wie auch bei der Hebbschen Lernregel gibt es drei Fälle zu unterscheiden (die beobachtete Aktivität ist zu hoch oder zu niedrig, oder entspricht dem gewünschten Ergebnis). Deshalb lautet die Formel der Delta-Regel wie folgt:
+\[
+	\Delta w = \eta \delta o_{\Omega}
+\]
+Bei der Delta-Regel ist die Gewichtsänderung aller Gewichte zu einem Ausgabeneuron $\Omega$ proportional zur Differenz der aktuellen Aktivierung $a_{\Omega}$ bzw. Ausgabe $o_{\Omega}$ und dem dazugehörigen Teaching Input $t_{\Omega}$.  
+
+Die Delta-Regel gilt damit nur für SLPs, da sich die Formel immer auf den Teaching Input $t_{\Omega}$ bezieht und für innere Verarbeitungsschichten von Neuronen kein Teaching Input existiert. Sie wird deshalb mit dem Backpropagation-Algorithmus verallgemeinert.
+
+
+\subsection*{Online- und Offline-Learning}
+Der Lernvorgang kann \emph{online} und \emph{offline} erfolgen:
+\begin{itemize}
+	\item \emph{Online Learning} - Beim Online Learning werden die Gewichte nach jedem Beispiel aus den Trainingsdaten angepasst. Dieses Vorgehen zeichnet sich durch \emph{Schnelligkeit} aus.
+	\item \emph{Offline Learning} - Beim Offline Learning hingegen werden die Gewichte nach eine Menge von Trainingsbeispielen verändert. Weshalb dieses Verfahren auch \emph{Batch-Trainingsverfahren} genannt wird, da ein Stapel Ergebnisse auf einmal korrigiert wird. Ein solcher Trainingsabschnitt wird als \emph{Epoche} bezeichnet. Dieses Vorgehen zeichnet sich durch \emph{Stabilität} aus.
+\end{itemize}
+
+\subsection*{Wichtige Fragen zum Lernen}
+Fragen, über die man sich beim Lernen Gedanken machen sollte, sind im Folgenden aufgeführt.
+\begin{itemize}
+	\item Woher kommt die Lerneingabe und in welcher Form liegt sie vor?
+	\item Wie werden die Gewichte modifiziert, um möglichst schnell und sicher zu lernen?
+	\item Wie kann der Erfolg eines Lernprozesses objektiv gemessen werden?
+	\item Kann ermittelt werden, welches das beste Lernverfahren ist?
+	\item Kann vorhergesagt werden, ob ein Lernverfahren in endlicher Zeit terminiert?
+	\item Wie wird das Gelernte im Netz gespeichert?
+	\item Kann verhindert werden, dass neu gelernte Muster alte erlernte Assoziationen wieder zerstören? (\emph{Stabilitäts-Plastizitäts-Dilemma})
+\end{itemize}
+Diese Fragen können nicht allgemein beantwortet werden, sondern müssen für jedes Lernverfahren und jede Topologie von Netzwerk neu diskutiert werden.
 
 
 
-\subsubsection*{Inverted Data Trick}
+% -----------------------------------------------------------------------
+% -----------------------------------------------------------------------
+\section*{Fehlerfunktionen}
+Ein Neuronales Netz zu \emph{trainieren} heißt die Kostenfunktion (engl. cost function), also die Fehler des Netzes zu \emph{minimieren}.
+Der zeitliche Verlauf des Fehlers wird als sogenannte \emph{Lernkurve} aufgetragen. Die Motivation für die Erschaffung dieser Lernkurve liegt darin, dass man mit ihr darstellen kann, ob das Netz Fortschritte macht oder nicht. Dabei sollte der Fehler normiert sein, also ein Abstandsmaß zwischen richtiger und aktueller Ausgabe des Netzes darstellen.
 
-\subsubsection*{Alternative Approach}
+Man unterscheidet zwei Arten von Fehlern:
+\begin{itemize}
+	\item \emph{Spezifischer Fehler} $Err_p$ - Er wird über ein einziges Trainingsbeispiel, also \emph{online}, gebildet.
+	\item \emph{Gesamtfehler} $Err$ - Er wird über alle Trainingsbeispiele einer Epoche, also \emph{offline}, gebildet.
+\end{itemize}
+Daher gilt bei $P$ Trainingsbeispielen in einer Epoche folgender Zusammenhang:
+\[
+	Err = \sum_{p \in P} Err_p
+\]
 
-\subsection*{Fehlerfunktionen}
-\subsubsection*{Mean Squared Error (MSE)}
-\subsubsection*{MSE und Sigmoid (Logistic Neuron)}
+\subsection*{Mean Squared Error (MSE)}
+Der Mean-Squared-Error berechnet den spezifischen Fehler $Err_p$ anhand der quadrierten Differenz zwischen erwarteter und tatsächlicher Ausgabe.
+\[
+	Err_p = \frac{1}{2} \sum_{\Omega \in O} ( t_{\Omega} - o_{\Omega})^2
+\]
+Dabei ist $\Omega$ eines von $O$ Ausgabeneuronen. Der Vorfaktor von $\frac{1}{2}$ dient der vereinfachten Ableitung der Gleichung.
 
-\subsection*{Softmax Group Activation Function}
+\subsection*{Euklidischer Abstand}
+Der spezifische Fehler basierend auf dem euklidischen Abstand berechnet sich wie folgt.
+\[
+	Err_p = \sqrt{ \sum_{\Omega \in O} ( t_{\Omega} - o_{\Omega})^2 }
+\]
 
-\subsection*{Gradient Descent}
+\subsection*{Root-Mean-Square (RMS)}
+Der Root-Mean-Square wird allgemein häufig verwendet, weil er auf grobe Ausreißer mehr Rücksicht nimmt.
+\[
+	Err_p = \sqrt{ \frac{
+		\sum_{\Omega \in O} ( t_{\Omega} - o_{\Omega})^2 }
+		{|O|}
+		}
+\]
+
+\subsection*{Gewichtsänderung}
+Die Gewichtsänderung $\Delta w$ ist proportional zur Ableitung des Fehlers nach den Gewichten. Es gilt:
+\[
+	\Delta w \sim - \nabla Err(w)
+\]
+Mit $\eta$ als Proportionalitätskonstante wir daraus:
+\[
+	\Delta w = - \eta \nabla Err(w)
+\]
+Die Ableitung der Fehlerfunktion nach den Gewichten wird im Folgenden als partielle Ableitung nach einem Gewicht $w_{i,\Omega}$ geschrieben. Umgangssprachlich formuliert wird damit an jedem Gewicht gedreht und die Änderung (Ableitung) der Fehlerfunktion betrachtet. Damit erhält man die Information $\Delta w_{i,\Omega}$, welche sagt wie das Gewicht verändert werden soll.
+\[
+	\Delta w_{i,\Omega} = - \eta \frac{\partial Err(w)}{\partial w_{i,\Omega}}
+\]
+
+%\section*{Aktivierungsfunktionen}
+% ToDo (Hier oder in Kapitel 1.)
+%\subsection*{Softmax Group Activation Function}
+
 
 % ----------------------------------------------------------------------
 % Themen aus Foliensatz, die in anderen Kapiteln der Zusammenfassung erläutert werden:
 % ----------------------------------------------------------------------
-\subsection*{McCulloch-Pitts Neuron}
+%\subsection*{McCulloch-Pitts Neuron}
 % -> Wird in Kapitel 1 der Zusammenfassung erklärt.
