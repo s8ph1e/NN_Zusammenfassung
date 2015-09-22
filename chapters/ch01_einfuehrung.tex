@@ -310,7 +310,14 @@ Dabei ist $O(t) = (o_1(t),...,o_n(t))$ ein Zeilenvektor, $W_j$ die $j$-te Spalte
 $Net(t) = O(t)W =  (o_1(t),...,o_n(t))\begin{pmatrix}
 w_{11} & ... & w_{1m}\\
 w_{n1} & ... & w_{nm}\\
-\end{pmatrix}$
+\end{pmatrix}$ \newline
+Biologisch motiviert kann man auch die anregenden (exzitatorischen) und hemmenden (inhibitorischen) Verbindungen in zwei verschiedene Gewichtsmatrizen mit nur positiven Gewichten speichern: \\
+\begin{align*}
+net_j(t) &= net_{excit,j} - net_{inhib,j}\\
+net_{excit,j} &= \sum_i o_i(t)w_{excit,ij}\\
+net_{inhib,j} &= \sum_i o_i(t)w_{inhib,ij} \text{ bzw. }\\
+Net(t) &= O(t)W_{excit} - O(t)W_{inhib}
+\end{align*}
 
 \subsection{Aktivierungsfunktion}
 Berechnet einen Aktivierungszustand aus altem Zustand und Eingabewerten\\
@@ -336,15 +343,21 @@ Aktuelle Lernverfahren arbeiten meist nur durch Modifikation der Verbindungen.
 Tabelle \ref{tab:lernregeln} zeigt wichtige Lernregeln.
 \begin{table}
 \centering
-\begin{tabular}{|l|}
+\begin{tabular}{|p{9cm}|}
 	\hline
-	Hebb'sche Lernregel: \\
+	\textbf{Hebb'sche Lernregel:}\newline Wenn Zelle $u_j$ Eingabe von $u_i$ erhält und beide geichzeitig stark aktiviert sind, soll Gewicht $w_{ij}$ (Bindungsstärke von $u_i$ nach $u_j$) erhöht werden: \newline $\delta w_{ij} = \eta o_ia_j$ \newline $\eta$ = Lernrate \newline
+	allgemein: $\delta w_{ij} = h(o_i, w_{ij})\cdot g(a_j, t_j)$, \newline
+	$t_i$ = erwartete Aktivierung (\glqq teaching input\grqq)\\
 	\hline
-	Delta-Regel (Widrow-Hoff-Regel):\\
+	\textbf{Delta-Regel (Widrow-Hoff-Regel):}\newline
+	$\delta w_{ij} = \eta o_i(t_j - a_j) = \eta o_i \delta_j$ \newline Gewichtsänderung propotional zur Differenz $\delta$  der Aktivierung und der erwarteten Aktivierung, verallgem. Lernregel für Perzeptrons\\
 	\hline
-	Grossberg's Regel:\\
+	\textbf{Grossberg's Regel:} \newline
+	$\delta w_{ij} = \eta (o_i - w_{ij})a_j$ \newline
+	Änderung propotional zur Differenz zwischen Ausgabe und Gewicht der Vorgängerzelle\\
 	\hline
-	Backpropagation (verallgem. Delta-Regel):\\
+	\textbf{Backpropagation (verallgem. Delta-Regel):}
+	siehe nächstes Kapitel\\
 	\hline
 \end{tabular}
 \caption{Wichtige Lernregeln}
@@ -354,3 +367,20 @@ Tabelle \ref{tab:lernregeln} zeigt wichtige Lernregeln.
 \section*{Komponenten neuronaler Modelle}
 % K
 % Was es so für neuronale Modelle gibt
+Ausgangsfrage: \textbf{Wann} werden die Aktivierungen der Zellen neu berechnet?\\
+\begin{itemize}
+\item \textbf{Asynchrone Modelle:} Einzelne Zellen ändern ihre Werte zu verschiedenen Zeitpunkten
+\begin{itemize}
+\item[1.] \textbf{Feste Ordnung:} Jede Zelle $u_i$ berechnet neue Aktivierung $a_i$ und Ausgabe $o_i$ bevor nächste Zelle besucht wird
+\item[2.] \textbf{Zufällige Auswahl:} Wähle zufällig eine Zelle $u_i$, berechne $a_i$ und $o_i$; wiederhole dies bis zum Ende
+\end{itemize}
+\item \textbf{Synchrone Modelle:} alle Zellen ändern ihre Werte leichzeitig. Berechne neue Aktivierung aller Zellen (quasi-) gleichzeitig; berechne erst danach neue Ausgabewerte aller Zellen 
+\end{itemize}
+
+\subsection{Aktivierungsfunktionen}
+Bermerkung: Häufig werden (wie im Folgenden) Aktivierungsfunktion $f_{act}$ und Ausgabefunktion $f_{out}$ zu einer Funktion $f$ zusammengefasst und dann wieder als Aktivierungsfunktion bezeichnet.\\
+\subsubsection*{Lineare Aktivierungsfunktionen}
+Hierbei können alle Netzwerke mit mehreren ebenen durch ein Netzwerk mit nur Input- und Output-Ebene mit andereren gewichten realisiert werden!
+
+\subsubsection*{Schrittfunktion}
+$o_j = \begin{cases} 1 & net_j \geq \theta_j\\ 0 & sonst \end{cases}$
