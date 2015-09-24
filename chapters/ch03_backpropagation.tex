@@ -99,6 +99,41 @@ Für die Ableitung gilt:
 
 % ----------------------------------------------------------------------
 % ----------------------------------------------------------------------
+\section*{Algorithmus}
+Im Folgenden ist der Ablauf des Backpropagation-Algorithmus aufgeführt.
+
+\begin{itemize}
+	\item zufällige Initialisierung der Gewichte
+	\item Wahl eines Eingabemusters $x \in X$
+
+	\begin{itemize}
+		\item \emph{Forward propagation}: \\
+			Berechnung der Netzausgabe $o_x$
+		\item \emph{Backward propagation}: \\
+			Fehlerrückführung durch das Netz und Berechnung des Fehleranteils je Gewicht: \\
+			$\quad \frac{\partial Err(W)}{\partial w_{k,h}}
+				(= - \delta_h \cdot o_k) $
+
+		\begin{itemize}
+			\item Für Ausgabeneuronen: \\
+				$\delta_h = 
+				\underbrace{(o_{x,h}(1-o_{x,h})}_{f'_{act}(net_{x,h})} 
+				\cdot (t_{x,h}-y_{x,h})$ 
+			\item Für versteckte Neuronen: \\
+				$\delta_h = 
+				\underbrace{(o_{x,h}(1-o_{x,h})}_{f'_{act}(net_{x,h})} 
+				\sum_{l \in L} \delta_l \cdot w_{h,l}$ 
+		\end{itemize}
+
+		\item Anpassen der Gewichte: $w_{k,h} \leftarrow w_{k,h} + \eta o_k \delta_h$ 
+		\item Solange wiederholen, bis Ergebnis (zu einem lokalen Minimum) konvergiert.
+	\end{itemize}
+
+\end{itemize}
+
+
+% ----------------------------------------------------------------------
+% ----------------------------------------------------------------------
 \section*{Probleme}
 Wie jedes Gradientenverfahren besitzt auch Backpropagation eine Reihe von Problemen, die dadurch entstehen, dass es ein lokales Verfahren ist, welches keine Information über die Fehlerfläche insgesamt hat, sondern nur aus der Kenntnis der lokalen Umgebung (des Gradienten bzw. bei Erweiterungen des Verfahrens zusätzlich einiger vorher besuchter Stellen der Fehlerfläche) ein Minimum suchen muss.
 
