@@ -147,12 +147,12 @@ Die Wahl von $\eta$ hängt vom Problem, den Trainingsdaten, sowie der Größe un
 Backpropagation mit Momentum-Term (auch konjugierter Gradientenabstieg (engl. conjugate gradient descent)) wurde von Rumelhart, Hinton und Williams beschrieben.
 Es ist eine einfache und häufig benutzte Methode zur Vermeidung der Probleme von Backpropagation auf flachen Plateaus und in steilen Schluchten der Fehlerfunktion. 
 
-Die Idee dahinter ist das Einbeziehen der vorangegangenen Gewichtsänderung. Dies führt zu einer \emph{Beschleunigung} (Erhöhung der Gewichtsänderung $\Delta w_{k,h}$) in weiten Plateaus und zu einem \emph{Abbremsen} in stark zerklüfteten Fehlerflächen.
+Die Idee dahinter ist das Einbeziehen der vorangegangenen Gewichtsänderung. Dies führt zu einer \emph{Beschleunigung} (Erhöhung der Gewichtsänderung $\Delta w_{i,j}$) in weiten Plateaus und zu einem \emph{Abbremsen} in stark zerklüfteten Fehlerflächen.
 
 Für die Gewichtsänderung gilt dann:
 \[
-	\Delta w_{k,h} (t+1) = \eta \cdot o_k \cdot \delta_h + 
-		\alpha w_{k,h}(t)
+	\Delta w_{i,j} (t+1) = \eta \cdot o_i \cdot \delta_j + 
+		\alpha w_{i,j}(t)
 \]
 
 \subsection*{Flat-Spot Elimination}
@@ -172,11 +172,120 @@ In der Literatur wird diese Variante auch als \emph{modified sigmoid-prime funct
 
 
 \subsection*{Manhattan-Training}
-% Zell S.103
+Die sogenannte Manhattan-Training-Modifikation von Backpropagation geht auf Bart Sutton zurück. Dabei wird die Backpropagation-Regel durch die Regel
+\[
+	\Delta w_{i,j} = \eta \cdot o_i \cdot sgn( \delta_j)
+\]
+ersetzt, wobei die Berechnung der Fehlersignale wie bei der verallgemeinerten Delta-Regel erfolgt. Bei dieser Regel spielen nicht mehr die Beträge der Fehlersignale eine Rolle, sondern nur noch ihr \emph{Vorzeichen}. Dadurch werden die \emph{Schritte auf der Fehlerfläche quasi-normiert}, was den Problemen zu kleiner Gradienten bei flachen Plateaus und zu großer Gradienten in steilen Tälern entgegenwirkt.
+
+Diese Quasi-Normierung ist wesentlich weniger rechenzeitaufwendig als eine richtige Normierung des Gradienten $\nabla E$ auf eine feste Länge und daher dieser meist vorzuziehen.
+
+
+\subsection*{SuperSAB}
+Bei SuperSAB hat jedes Gewicht eine eigene Lernrate / Schrittweite $\eta_{i,j}(t)$. Diese wird im Verlauf des Trainings kontinuierlich der Fehlerfläche angepasst. Dabei wird $\eta_{i,j}$ vergrößert, wenn die partielle Ableitung $\frac{\partial Err_p}{\partial w_{i,j}}$ für mehrere Zeitschritte das gleiche Vorzeichen hat und verkleinert, wenn sich das Vorzeichen ändert.
+
+Für die Anpassung wird das Produkt aus der aktuellen Lernrate $\eta_{i,j}(t)$, sowie einer der Konstanten $\eta^-$ (meist $0.5$) oder $\eta^+$ (meist $1.05$) verwendet:
+\begin{align*}
+	\eta_{i,j}(t+1) = 
+	\begin{cases}
+		\eta_{i,j}(t) \cdot \eta^- &\text{falls }
+			\frac{\partial E}{\partial w_{i,j}}(t) \cdot
+			\frac{\partial E}{\partial w_{i,j}}(t+1) < 0 \\
+		\eta_{i,j}(t) \cdot \eta^+ &\text{falls }
+			\frac{\partial E}{\partial w_{i,j}}(t) \cdot
+			\frac{\partial E}{\partial w_{i,j}}(t+1) > 0 \\
+		\eta_{i,j}(t) &\text{sonst}
+	\end{cases}
+\end{align*}
+
 
 \subsection*{Quickprop}
+Mit dem Quickprop-Algorithmus soll eine schnelleres Training eines MLP erreicht werden. Er macht zwei "`riskante"' Annahmen:
+\begin{enumerate}
+	\item Die Fehlerkurve $Err(w)$ hat die Form einer Parabel
+	\item Die Parabeln für jedes Gewicht $w_{h,l}$ sind unabhängig von einander.
+\end{enumerate}
+Diese Annahmen sind nicht richtig. Durch das iterative Einstellen der Gewichte werden die gemachten Fehler jedoch aufgehoben.
+
+Der Algorithmus wird manchmal der Gruppe Lernverfahren zweiter Ordnung zugerechnet, da über eine \emph{quadratische} Approximation aus dem vorhergehenden Gradientenschritt $S(t-1)$ und dem aktuellen Gradienten $S(t)$ auf das Minimum der Fehlerfunktion (Scheitelpunkt der Parabel) geschlossen wird (siehe Abbildung \ref{fig:ch03_quickprop}).
+
+Aus Abbildung \ref{fig:ch03_quickprop} geht hervor, dass die Gewichtsänderung $\Delta w_{ij}(t)$ gesucht ist, um das neue Gewicht zum Zeitpunkt $t+1$ zu bestimmen (Gewicht am Scheitelpunkt der Parabel). Aus den Ähnlichkeiten der schraffiert hervorgehobenen Dreiecke folgt dieser Zusammenhang:
+\[
+	\frac{\Delta w_{i,j}(t)}{\Delta w_{i,j}(t-1)} = 
+		\frac{S(t)}{S(t-1) - S(t)}
+\]
+Daraus ergibt sich für die Gewichtsänderung $\Delta w_{i,j}(t)$ und damit für den Quickprop-Algorithmus diese Gleichung:
+\[
+	\Delta w_{i,j}(t) = 
+		\frac{S(t)}{S(t-1) - S(t)} \cdot \Delta w_{i,j}(t-1)
+\]
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch03_quickprop.pdf}
+	\caption{Idee des Quickprop-Algorithmus: Bestimmung des Scheitelpunktes der angelegten Parabel anhand der Steigung zweier verschiedener Punkte und deren Abstand. Die Abbildung zeigt oben die Fehlerkurve mit angenäherter Parabel, sowie die beiden Punkte zum Zeitpunkt $t-1$ und $t$. Unten ist die Steigung der Parabel als Gerade durch die beiden Steigungswerte $S(t-1)$ und $S(t)$ aufgetragen. Die Nullstelle gibt das Gewicht für den (angenäherten) minimalen Fehler (Scheitelpunkt der Parabel im oberen Diagramm) an.}
+	\label{fig:ch03_quickprop}
+\end{figure}
+
+
+
+Der Quickprop-Algorithmus funktioniert sehr gut für hochgradig nichtlineare Probleme wie z.B. XOR. Ein beispielhaftes Trainingsverhalten ist in Abbildung \ref{fig:ch03_quickprop-training} aufgeführt.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=0.7\linewidth]{figures/ch03_quickprop-training.pdf}
+	\caption{Trainingsverhalten von Backpropagation (oben) und Backpropagation mit Quickprop (unten) bei hochgradig nichtlinearen Problemen.}
+	\label{fig:ch03_quickprop-training}
+\end{figure}
 
 \subsection*{Rprop}
+Rprop (resilient propagation) ist ein Lernverfahren, das Ideen des Manhattan-Trainings, von SuperSAB und von Quickprop kombiniert: Um die Gewichte zu aktualisieren wird nur die Lernrate $\eta$ und das Vorzeichen der partiellen Ableitung $\frac{\partial E}{\partial w_{i,j}}$ verwendet.
+
+Dieses Vorgehen beschleunigt den Lernvorgang insbesondere in flachen Ebenen der Fehlerfunktion und nahe von lokalen Minima. Um eine zu starke Be- bzw. Entschleunigung zu verhindern existieren Minimal- und Maximalwerte ($\eta_{min}$ und $\eta_{max}$) für die Lernrate.
+
+Wie beim Manhattan-Training werden die Gewichte nicht nach dem Gradienten der Fehlerfunktion, sondern \emph{nur nach dem Vorzeichen dieses Gradienten} geändert.
+Für die Gewichts"-änderung bei Rprop gilt demnach:
+\begin{align*}
+	\text{es sei } g &= \frac{\partial Err(W)}{\partial w_{i,j}}\\\\
+	\Delta w_{i,j} (t) &=
+	\begin{cases}
+		-\eta_{i,j} (t) &\text{wenn } g(t) > 0 \\
+		+\eta_{i,j} (t) &\text{wenn } g(t) < 0 \\
+		0 &\text{sonst} 
+	\end{cases}
+\end{align*}
+
+Wie bei SuperSAB und bei Quickprop werden die Steigungen der Fehlerfunktion des aktuellen und vorherigen Zeitpunkts verwendet.
+Ähnlich wie bei SuperSAB besitzt jedes Gewicht einen eigenen Parameter für die Änderung der Schrittweite.
+Für die Anpassung der Lernrate $\eta_{i,j}$ wird der aktuelle Gradient $g(t)$ und der vorherige Gradient $g(t-1)$ betrachtet. Wieder ist das Vorzeichen entscheidend: Es kann über die beiden Zeitschritte gleich bleiben oder wechseln.
+
+Wechselt das Vorzeichen von $g(t-1)$ zu $g(t)$, wurde ein lokales Minimum übersprungen, die Gewichtsänderung war zu groß.
+Folglich muss die Lernrate $\eta_{i,j}(t)$ im Vergleich zu $\eta_{i,j}(t-1)$ \emph{verkleinert} werden. Dies geschieht (analog zu SuperSAB) durch Multiplikation des alten Wertes $\eta_{i,j}(t-1)$ mit der Konstanten $\eta^-$.
+
+Bleibt das Vorzeichen jedoch gleich, kann eine (behutsame) Vergrößerung durch Multiplikation von $\eta_{i,j}(t-1)$ mit der Konstanten $\eta^+$ vorgenommen werden. Dies hilft um über flache Bereiche der Fehlerfunktion hinwegzukommen.
+
+Für die Anpassung der Lernrate gilt bei Rprop also:
+\begin{align*}
+	\eta_{i,j}(t) = 
+	\begin{cases}
+		\eta^+ \cdot \eta_{i,j}(t-1)	&\text{wenn }
+			g(t-1)g(t) > 0 \\
+		\eta^- \cdot \eta_{i,j}(t-1)	&\text{wenn }
+			g(t-1)g(t) < 0 \\
+		\eta_{i,j}(t-1)					&\text{sonst }
+	\end{cases}
+\end{align*}
+
+Achtung: Daraus folgt auch, dass Rprop ausschließlich für Offline-Lernen konzipiert ist, denn wenn die Gradienten nicht eine gewisse Kontinuität aufweisen, bremst das Lernverfahren auf niedrigstes Tempo ab (und verweilt dort).\footnote{Wer online lernt, wechselt ja - salopp gesprochen - mit jeder neuen Epoche die Fehlerfunktion, da diese nur auf jeweils ein Trainingsmuster bezogen ist.}
+
+\subsection*{Weight Decay}
+Bei der Modifikation Weight Decay (zu Deutsch: Dämpfung der Gewichte) von Paul Werbos wird der Fehler um einen Term erweitert, der große Gewichte bestraft. Der Fehler unter Weight Decay steigt also nicht nur mit dem eigentlichen Fehler, sondern auch mit dem Quadrat der Gewichte – was zur Folge hat, dass das Netz beim Lernen die Gewichte klein hält.
+\[
+	Err_{WD} = Err + 
+		\underbrace{ \beta \cdot \frac{1}{2} \sum_{w \in W} w^2 }_
+		{\text{"`Bestrafung"'}}
+\]
+Dies ist von der Natur inspiriert, in der synaptische Gewichte ebenfalls nicht unendlich stark werden können. Klein gehaltene Gewichte sorgen außerdem häufig dafür, dass die Fehlerfunktion weniger starke Schwankungen beinhalten, was das Lernen einfacher und kontrollierter macht.
+
+Der Vorfaktor $\frac{1}{2}$ ist (wieder) aus einfacher Pragmatik heraus entstanden. Der Faktor $\beta$ regelt die Stärke der Bestrafung: Werte von $0.001$ bis $0.02$ werden hier oft verwendet.
 
 
 
