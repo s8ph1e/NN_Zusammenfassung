@@ -348,6 +348,33 @@ Der Root-Mean-Square wird allgemein häufig verwendet, weil er auf grobe Ausrei�
 		}
 \]
 
+
+\subsection*{Cross-Entropy}
+Ein Neuron mit der Sigmoid-Aktivierungsfunktion und MSE als Fehlerfunktion kann in den flachen Bereichen der Sigmoidfunktion saturieren (vgl. Abschnitt über Flat-Spot Elimination).
+Grund dafür ist die Ableitung der Sigmoidfunktion. Diese ist in Bereichen in denen die Sigmoidfunktion nahe 0 oder nahe 1 ist, sehr gering. Dies hat Auswirkung auf die Gewichtsänderung. Schließlich gilt mit Sigmoid und MSE:
+\[
+	\frac{\partial Err}{\partial w_{k,h}} = 
+		f'_{act}(net_h) (t_h - y_h)
+\]
+Ist der Wert für $f'_{act}(net_h)$ also sehr gering, ist auch die Gewichtsänderung sehr gering: Das Netz lernt nur noch sehr langsam.
+
+Mit Cross-Entropy als Fehlerfunktion soll dieses Verlangsamen des Lernvorgangs verhindert werden.
+Der Fehler ist bei Cross-Entropy wie folgt definiert:
+\[
+	Err_p = -\frac{1}{n} \sum_{\Omega \in O} 
+		\big[ t_{\Omega} \ln o_{\Omega} + (1-t_{\Omega} ) 
+		\ln (1-o_{\Omega}) \big]
+\]
+Damit ergibt sich für die partielle Ableitung nach dem Gewicht folgender Zusammenhang für die Gewichtsanpassung:
+\[
+	\frac{\partial Err}{\partial w_{k,h}} = 
+		\sum_{\Omega \in O} x ( f_{act}(net_h) - y_h )
+\]
+Je größer der Fehler, desto schneller lernt das Netz. Außerdem fehlt der Term der Ableitung $f'_{act}$, was ein verlangsamtes Lernen im saturierten Bereich der Sigmoidfunktion verhindert.
+
+Eigentlich stellt Cross-Entropy keine Fehlerfunktion im eigentlichen Sinne dar. Bei genauerem Betrachten der Formel fällt jedoch auf, dass sie positive Werte liefert, welche gegen Null streben, wenn die berechnete Ausgabe der gewünschten Ausgabe entspricht. Beides sind Eigenschaften, die auch für eine Fehler- bzw. Kostenfunktion gelten.
+
+
 \subsection*{Gewichtsänderung}
 Die Gewichtsänderung $\Delta w$ ist proportional zur Ableitung des Fehlers nach den Gewichten. Es gilt:
 \[
