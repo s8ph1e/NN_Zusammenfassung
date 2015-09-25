@@ -202,6 +202,12 @@ Für die Gewichtsänderung gilt dann:
 		\alpha w_{i,j}(t)
 \]
 
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch03_momentum-term.pdf}
+	\caption{Backpropagation ohne (a) und mit (b) Momentum-Term.}
+	\label{fig:ch03_momentum-term}
+\end{figure}
+
 \subsection*{Flat-Spot Elimination}
 Ein bekanntes Problem der Backpropagation-Formel ist die Tatsache, dass Neuronen, die im Sättigungsbereich der sigmoiden Aktivierungsfunktion operieren (0 oder 1 bei der logistischen Aktivierungsfunktion), sich nur schwer wieder daraus entfernen, weil ihre Gewichte sich nur um einen minimalen Bruchteil ändern können.
 
