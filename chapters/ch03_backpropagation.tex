@@ -1,30 +1,18 @@
 % ----------------------------------------------------------------------
 % ----------------------------------------------------------------------
-\section*{Prinzip}
-Backpropagation ist ein \emph{Gradientenabstiegsverfahren} und die Erweiterung der Delta-Regel auf mehrere trainierbare Gewichtsschichten, weil bei mehrstufigen Netzen keine erwünschte Ausgabe als Lerneingabe (teaching input) für die Zellen \emph{innerer Ebenen} vorhanden ist.
-
-Wenn man den Fehler eines neuronalen Netzes als Funktion der Gewichte des Netzwerks graphisch aufträgt, erhält man eine Fehlerfläche, welche sich im zweidimensionalen Fall anschaulich graphisch darstellen lässt.
-
-\begin{figure}[ht!] \centering 
-	\includegraphics[width=\linewidth]{figures/ch03_fehlerflaeche.pdf}
-	\caption{Fehlerfunktion $Err(w_1, w_2)$ grafisch aufgetragen.}
-	\label{fig:ch03_fehlerflaeche}
-\end{figure}
-
-Abbildung \ref{fig:ch03_fehlerflaeche} zeigt die Fehlerfunktion $Err(w_1, w_2)$. Bei $n$ Gewichten gilt allgemein:
-\[
-	Err(\vec{w}) = Err(w_1, \ldots, w_n)
-\]
-Diese Fehlerfunktion gibt den Fehler an, den das Netz bei gegebenen Gewichten $w_1, \ldots, w_n$ über alle Trainingsmuster aufsummiert besitzt.
-
-Mit einem Gradientenverfahren, d.h. der Methode des steilsten Abstiegs, wird nun versucht, möglichst schnell ein globales Minimum der Fehlerfunktion zu finden, d.h. eine Konfiguration der Gewichte, bei der die Fehlersumme über alle Trainingsmuster minimal ist.
-
-
-
-% ----------------------------------------------------------------------
-% ----------------------------------------------------------------------
 \section*{Gradientenverfahren}
-Alle Gradientenverfahren (engl. gradient decent) berechnen den Gradienten einer Zielfunktion, hier der Fehlerfunktion, und steigen entweder orthogonal zum Gradienten nach oben, bis ein Maximum erreicht ist oder nach unten, bis ein Minimum erreicht ist.
+\subsection*{Gradient}
+Der \emph{Gradient} ist ein Vektor $g$, der für jeden differenzierbaren Punkt einer Funktion $f$ definiert ist. Er deutet von diesem Punkt aus in die Richtung des \emph{steilsten Anstiegs} und gibt durch seinen Betrag $|g|$ den Steigungsgrad in diese Richtung an.
+
+Der Gradient ist also die \emph{Verallgemeinerung der Ableitung für mehrdimensionale Funktionen}. Folglich deutet der negative Gradient $-g$ genau in die Richtung des steilsten Abstiegs.
+
+Der Operator für einen Gradienten $\nabla$ wird als \emph{Nabla-Operator} bezeichnet. Die Schreibweise für einen Gradienten $g$ des Punktes $(x,y)$ einer zweidimensionalen Funktion $f$ lautet:
+\[
+	g(x,y) = \nabla f(x,y)
+\]
+
+\subsection*{Gradientenabstieg}
+Alle Gradientenverfahren (engl. gradient descent) berechnen den Gradienten einer Zielfunktion, hier der Fehlerfunktion, und steigen entweder orthogonal zum Gradienten nach oben, bis ein Maximum erreicht ist oder nach unten, bis ein Minimum erreicht ist.
 Hier wird versucht, durch Änderung der Gewichte den Fehler zu minimieren, indem eine Änderung aller Gewichte um einen Bruchteil des negativen Gradienten der Fehlerfunktion vorgenommen wird.
 Es gilt der Zusammenhang, welcher schon im vorherigen Abschnitt bei den Fehlerfunktionen behandelt wurde:
 \begin{align*}
@@ -43,6 +31,30 @@ Auch beim Gradientenabstiegsverfahren unterscheidet man zwischen online und offl
 	\item \emph{Stochastic Gradient Descent} - Die Anpassung der Gewichte findet nach jedem Trainingsbeispiel statt. Daher ist dieses Verfahren robuster gegen nicht-konvexe Fehlerfunktionen. 
 	\item \emph{Batch Gradient Descent} - Hier werden die Änderungen der Gewichte über eine Epoche hinweg aufaddiert und erst anschließend auf die Gewichte angewandt.
 \end{itemize}
+
+
+
+% ----------------------------------------------------------------------
+% ----------------------------------------------------------------------
+\section*{Prinzip von Backpropagation}
+Backpropagation ist ein \emph{Gradientenabstiegsverfahren} und die Erweiterung der Delta-Regel auf mehrere trainierbare Gewichtsschichten, weil bei mehrstufigen Netzen keine erwünschte Ausgabe als Lerneingabe (teaching input) für die Zellen \emph{innerer Ebenen} vorhanden ist.
+
+Wenn man den Fehler eines neuronalen Netzes als Funktion der Gewichte des Netzwerks graphisch aufträgt, erhält man eine Fehlerfläche, welche sich im zweidimensionalen Fall anschaulich graphisch darstellen lässt.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch03_fehlerflaeche.pdf}
+	\caption{Fehlerfunktion $Err(w_1, w_2)$ grafisch aufgetragen.}
+	\label{fig:ch03_fehlerflaeche}
+\end{figure}
+
+Abbildung \ref{fig:ch03_fehlerflaeche} zeigt die Fehlerfunktion $Err(w_1, w_2)$. Bei $n$ Gewichten gilt allgemein:
+\[
+	Err(\vec{w}) = Err(w_1, \ldots, w_n)
+\]
+Diese Fehlerfunktion gibt den Fehler an, den das Netz bei gegebenen Gewichten $w_1, \ldots, w_n$ über alle Trainingsmuster aufsummiert besitzt.
+
+Mit einem Gradientenverfahren, d.h. der Methode des steilsten Abstiegs, wird nun versucht, möglichst schnell ein globales Minimum der Fehlerfunktion zu finden, d.h. eine Konfiguration der Gewichte, bei der die Fehlersumme über alle Trainingsmuster minimal ist.
+
 
 
 % ----------------------------------------------------------------------
