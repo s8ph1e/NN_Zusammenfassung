@@ -32,6 +32,17 @@ Auch beim Gradientenabstiegsverfahren unterscheidet man zwischen online und offl
 	\item \emph{Batch Gradient Descent} - Hier werden die Änderungen der Gewichte über eine Epoche hinweg aufaddiert und erst anschließend auf die Gewichte angewandt.
 \end{itemize}
 
+\subsubsection*{Mini-Batch Gradient Descent}
+Ein Kompromiss zwischen \emph{Stochastic Gradient Descent} und \emph{Batch Gradient Descent} stellt der sogenannte \emph{Mini-Batch Gradient Descent} dar.
+Hier beziehen sich die Änderungen der Gewichte auf eine \emph{Teilmenge} der Trainingsmenge, dem Mini-Batch. Dafür wird die Trainingsmenge $X$ in eine Menge von $\frac{|X|}{b}$ Mini-Batches $\mathbb{B}$ unterteilt. Jeder dieser Mini-Batches $B \in \mathbb{B}$ enthält $|B| = b_s$ Trainingsbeispiele\footnote{Die Mini-Batch Größe $b_s$ liegt üblicherweise zwischen $2$ und $1024$.}.
+
+Für den Fehler ergibt sich daraus:
+\[
+	E_B = \sum_{x \in B} E_x
+\]
+
+Mini-Batch Gradient Descent ist schneller als Batch Gradient Descent, weil die Gewichte öfter aktualisiert werden (vor allem bei großen Trainingsmengen interessant). Der Algorithmus kann bereits nach einer Epoche konvergieren.
+Mini-Batch Gradient Descent ist zudem schneller als Stochastic Gradient Descent, weil weniger Gewichte aktualisiert werden müssen und der Algorithmus sehr einfach zu parallelisieren ist\footnote{Die Parallelisierung ist deshalb möglich, weil die Summe über $|B| = b_s$ Trainingsbeispiele vektorisiert werden kann.}.
 
 
 % ----------------------------------------------------------------------
@@ -79,6 +90,21 @@ Formal ergibt sich daraus folgender Zusammenhang:
 	\caption{Diese Abbildung zeigt die Lage des in der Formel für Backpropagation betrachteten Neurons $h$ in einer Hiddenschicht $H$. Die Vorgängerschicht ist $K$, die nachfolgende Schicht $L$. Wichtig hierbei: $L$ ist \emph{nicht} die Ausgabeschicht, sonst würde für $h$ die einfache Delta-Regel gelten.}
 	\label{fig:ch03_fehlerflaeche}
 \end{figure}
+
+\subsection*{Mini-Batch Gradient Descent}
+Der Fehlerterm $\delta_h$ ist bei Mini-Batch Gradient Descent wie folgt definiert:
+\begin{align*}
+	\delta_h &=
+	\begin{cases}
+		\frac{1}{|B|} \sum_{x \in B} (t_h - y_h) 
+		\quad &\text{h außen} \\
+		\frac{1}{|B|} \sum_{x \in B} \big[
+			o_h(1 - o_h)
+			\sum_{l \in L} (\delta_l \cdot w_{h,l})
+		\big] 
+		\quad &\text{h innen}
+	\end{cases}
+\end{align*}
 
 
 
