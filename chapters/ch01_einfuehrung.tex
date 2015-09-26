@@ -384,3 +384,22 @@ Hierbei können alle Netzwerke mit mehreren ebenen durch ein Netzwerk mit nur In
 
 \subsubsection*{Schrittfunktion}
 $o_j = \begin{cases} 1 & net_j \geq \theta_j\\ 0 & sonst \end{cases}$
+
+\subsubsection*{Softmax}
+Multi-Layer-Perzeptronen werden häufig für Klassifikationsaufgaben genutzt. Dabei ist es sinnvoll, dass die Ausgabeneuronen eine Wahrscheinlichkeitsfunktion darstellen. Dann existiert für jede Klasse ein Ausgabeneuron, welches die Wahrscheinlichkeit für die repräsentierte Klasse ausgibt. Dabei muss gelten:
+\[
+	\sum_{j} o_{x,j} = 1
+\]
+Die standardmäßig verwendete Sigmoid-Aktivierungsfunktion kann diesen Zusammenhang nicht garantieren.
+Für solche Fälle gibt es die Softmax-Aktivierungsfunktion (auch normalisierte Exponentialfunktion):
+\[
+	f_{act}(net_i) = \frac{e^{net_i}}{\sum_{\Omega \in O} e^{net_{\Omega}}}
+\]
+Dabei ist $net_i$ die Netzeingabe eines Ausgabeneurons $i$ und $O$ die Menge aller Ausgabeneuronen. Die Summe über alle Ausgabeneuronen im Nenner normalisiert die Ausgabe der Softmax-Aktivierungsfunktion auf einen Bereich zwischen $0$ und $1$.
+Die Ausgabe ist dann eine a-posteriori Wahrscheinlichkeit $p(c | x)$, wenn:
+\begin{itemize}
+	\item eine ausreichend große Trainingsmenge zur Verfügung steht
+	\item die Trainingsziele $0$ oder $1$ sind
+	\item der Teaching-Input-Vektor $t_{x,i}$ nur in einer Dimension eine $1$ besitzt (und sonst Nullen)
+\end{itemize}
+
