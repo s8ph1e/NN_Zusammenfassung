@@ -36,6 +36,7 @@
 
 \definecolor{color1}{RGB}{0,0,90} % Color of the article title and sections
 \definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
+\definecolor{color3}{RGB}{241, 196, 15} % Color of hint boxes.
 
 %----------------------------------------------------------------------------------------
 %	HYPERLINKS
@@ -52,6 +53,9 @@
 
 \newtcbtheorem[number within=section]{mytheo}{}%
 {colback=color1!5,colframe=color1!35!color1,fonttitle=\bfseries}{th}
+
+\newtcbtheorem[number within=section]{hint}{}%
+{colback=color3!5,colframe=color3!35!color3,fonttitle=\bfseries}{hi}
 
 %----------------------------------------------------------------------------------------
 %	ARTICLE INFORMATION
