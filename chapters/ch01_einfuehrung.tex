@@ -38,7 +38,7 @@ Verfügung, mit deren Hilfe Netze viel schneller trainiert werden können, als d
 mit reinen Software-Simulatoren möglich ist.
 \end{itemize} 
 
-\subsection{Menschliches Gehirn vs. Rechner}
+\subsection*{Menschliches Gehirn vs. Rechner}
 Vergleicht\footnote{Diese kurze Gegenüberstellung ist aus mehreren Gründen problematisch: zum
 einen sagt die Zahl der Instruktionen, Maschinenbefehle oder
 Transistorschaltvorgänge bei einem Programm überhaupt nichts aus über seine
@@ -83,7 +83,7 @@ primitiven Analyse ca. 8 Zehnerpotenzen zwischen der theoretischen Leistung und
 der tatsächlichen Leistung liegen.
 \end{itemize}
 
-\subsection{Konnektionismus vs. klassische Künstliche Intelligenz (KI)}
+\subsection*{Konnektionismus vs. klassische Künstliche Intelligenz (KI)}
 Hier: konnektionistische Modelle = neuronale Modelle
 \begin{mytheo}{Paradigma des Konnektionismus}
 IInformationsverarbeitung als
@@ -107,7 +107,7 @@ Viele zukünftige Anwendungssysteme werden wohl konventionelle algorithmische
 Komponenten besitzen, Module, die neuronal realisiert sind, und andere, die
 symbolisch schließen können. Die Integration dieser Komponenten ist allerdings
 eine große Herausforderung.
-\subsection{Eigenschaften von NN}
+\subsection*{Eigenschaften von NN}
 Positive Eigenschaften:
 \begin{itemize}[noitemsep]
 \item Lernfähigkeit: Neuronale Netze werden zumeist nicht programmiert, sondern
@@ -202,7 +202,7 @@ weiterleitet, sich verzweigt und mit den Dendriten nachfolgender Neuronen
 numerischen Wert, das Verbindungsgewicht, dargestellt.
 \end{itemize}
 
-\subsection{Komponenten neuronaler Netze}
+\subsection*{Komponenten neuronaler Netze}
 \begin{itemize}
 \item[1.] \textbf{Zellen} (Neuronen, Elemente, units) $u_i$.\\ Diese Zellen besitzen die Bestandteile:
 \begin{itemize}[noitemsep]
@@ -253,8 +253,8 @@ außenstehenden Betrachter nicht zu sehen
 
 Hier: ein n-stufiges Netz besitzt n Schichten trainierbarer Verbindungen hat (d.h. n+1 Schichten von Neuronen, davon n-1 Schichten verdeckter Neuronen)
 
-\subsection{Beispiel: XOR-Netzwerk}
-\subsection{Aktivierungszustand}
+\subsection*{Beispiel: XOR-Netzwerk}
+\subsection*{Aktivierungszustand}
 Aktivierungszustand eines Neurons $i$ zum Zeitpunkt $t$: $a_i(t)$ 
 \begin{itemize}
 \item (quasi-) kontinuierliche Wertebereiche: verschiedene Modelle 
@@ -270,7 +270,7 @@ des Aktivierungszustandes angibt.
 \item diskrete Wertebereiche: diskrete Aktivierungszustände, welche in einer Implementierung als binäre Werte, beispielsweise $\{0, 1\}$, $\{-1, 1\}$ oder auch $\{+, -\}$, gespeichert und verarbeitet werden.
 \end{itemize}
 
-\subsection{Ausgabefunktion}
+\subsection*{Ausgabefunktion}
 Die Ausgabefunktion berechnet die Ausgabe einer Zelle aus ihrer Aktivierung nach
 der Formel $o_i(t) = f_{out}(a_i(t))$
 Die meisten neuronalen Modelle verwenden eine nichtlineare Funktion, die aus der
@@ -284,7 +284,7 @@ Ausgabefunktion diese nichtlineare Funktion. Vgl. Abbildung \ref{fig:ausgabefunk
 	\label{fig:ausgabefunktionen}
 \end{figure}
 
-\subsection{Verbindungsnetzwerke}
+\subsection*{Verbindungsnetzwerke}
 Üblicherweise wird das Verbindungsnetzwerk der Zellen in
 einer Matrixschreibweise angegeben: $w_{ij}$ ist eine Verbindung von Zelle $i$ nach Zelle $j$. Für die Verbindungsmatrix $\textbf{W} = [w_{ij}]$ gilt dann: ein Eintrag in der Matrix $\textbf{W}$ mit
 \begin{itemize}
@@ -303,7 +303,7 @@ Folgende Topologien neuronaler Netze kommen besonders häufig in Simulationen vo
 \item \textbf{hierarchische Netze:} Gliederung in mehrere Ebenen
 \end{itemize}
 
-\subsection{Propagierungsregel}
+\subsection*{Propagierungsregel}
 gibt die Gesamteingabe aller Nachbarzellen an und hat bei sehr vielen Modellen die Form:\\
 $net_j(t) = \sum_i o_i(t)w_{ij} = O(t)W_j$ (gewichtete Summe)\\
 Dabei ist $O(t) = (o_1(t),...,o_n(t))$ ein Zeilenvektor, $W_j$ die $j$-te Spalte der Gewichtsmatrix $\textbf{W}$:\\
@@ -319,7 +319,7 @@ net_{inhib,j} &= \sum_i o_i(t)w_{inhib,ij} \text{ bzw. }\\
 Net(t) &= O(t)W_{excit} - O(t)W_{inhib}
 \end{align*}
 
-\subsection{Aktivierungsfunktion}
+\subsection*{Aktivierungsfunktion}
 Berechnet einen Aktivierungszustand aus altem Zustand und Eingabewerten\\
 $a_i(t+1) = f_{act}(a_i(t), net_i(t), \theta_i)$
 \begin{itemize}
@@ -327,7 +327,7 @@ $a_i(t+1) = f_{act}(a_i(t), net_i(t), \theta_i)$
 \item stochastische Aktivierungsfunktion $f$: Ergebnis durch eine Zufallsverteilung abhängig von der Eingabe bestimmt
 \end{itemize}
 
-\subsection{Lernregel}
+\subsection*{Lernregel}
 
 Theoretisch mögliche Arten des Lernens:
 \begin{itemize}
@@ -377,7 +377,7 @@ Ausgangsfrage: \textbf{Wann} werden die Aktivierungen der Zellen neu berechnet?\
 \item \textbf{Synchrone Modelle:} alle Zellen ändern ihre Werte leichzeitig. Berechne neue Aktivierung aller Zellen (quasi-) gleichzeitig; berechne erst danach neue Ausgabewerte aller Zellen 
 \end{itemize}
 
-\subsection{Aktivierungsfunktionen}
+\subsection*{Aktivierungsfunktionen}
 Bermerkung: Häufig werden (wie im Folgenden) Aktivierungsfunktion $f_{act}$ und Ausgabefunktion $f_{out}$ zu einer Funktion $f$ zusammengefasst und dann wieder als Aktivierungsfunktion bezeichnet.\\
 \subsubsection*{Lineare Aktivierungsfunktionen}
 Hierbei können alle Netzwerke mit mehreren ebenen durch ein Netzwerk mit nur Input- und Output-Ebene mit andereren gewichten realisiert werden!
