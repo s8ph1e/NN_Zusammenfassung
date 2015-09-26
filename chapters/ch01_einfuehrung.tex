@@ -378,12 +378,42 @@ Ausgangsfrage: \textbf{Wann} werden die Aktivierungen der Zellen neu berechnet?\
 \end{itemize}
 
 \subsection*{Aktivierungsfunktionen}
-Bermerkung: Häufig werden (wie im Folgenden) Aktivierungsfunktion $f_{act}$ und Ausgabefunktion $f_{out}$ zu einer Funktion $f$ zusammengefasst und dann wieder als Aktivierungsfunktion bezeichnet.\\
+Bermerkung: Häufig werden (wie im Folgenden) Aktivierungsfunktion $f_{act}$ und Ausgabefunktion $f_{out}$ zu einer Funktion $f$ zusammengefasst und dann wieder als Aktivierungsfunktion bezeichnet.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch01_fact.png}
+	\caption{Grafische Darstelung häufiger Aktivierungsfunktionen.}
+	\label{fig:ch01_fact}
+\end{figure}
+
 \subsubsection*{Lineare Aktivierungsfunktionen}
 Hierbei können alle Netzwerke mit mehreren ebenen durch ein Netzwerk mit nur Input- und Output-Ebene mit andereren gewichten realisiert werden!
 
 \subsubsection*{Schrittfunktion}
-$o_j = \begin{cases} 1 & net_j \geq \theta_j\\ 0 & sonst \end{cases}$
+Die ursprüngliche Aktivierungsfunktion eines Perzeptrons ist die Schrittfunktion (engl. step function). Sie liefert entweder eine $1$ oder eine $0$:
+\[
+	f_{act}(x) = 
+	\begin{cases}
+		1 & x \geq \theta \\
+		0 & \text{sonst} 
+	\end{cases}
+\]
+Dabei ist $\theta$ der sogenannte \emph{Schwellwert}, ab dem die Funktion eine $1$ zurück gibt.
+
+Nachteil: Die Ableitung dieser Funktion ist immer\footnote{Mit Ausnahme von $f'_{act}(0)$.} Null. 
+
+
+\subsubsection*{Sigmoid}
+Die Sigmoid-Aktivierungsfunktion ist wie folgt definiert: 
+\begin{align*}
+	f_{act}(x) = \frac{1}{1 + e^{-x}}
+\end{align*}
+Für die Ableitung gilt:
+\begin{align*}
+	\frac{d f_{act}(x)}{dx} =
+		f_{act}(x) (1 - f_{act}(x))
+\end{align*}
+Aufgrund der flachen Bereiche der Sigmoid-Funktion kann der Lernvorgang saturieren. Dies kann möglicherweise gut für Neuronen der versteckten Schichten sein, ist jedoch schlecht für Ausgabeneuronen.
 
 \subsubsection*{Softmax}
 Multi-Layer-Perzeptronen werden häufig für Klassifikationsaufgaben genutzt. Dabei ist es sinnvoll, dass die Ausgabeneuronen eine Wahrscheinlichkeitsfunktion darstellen. Dann existiert für jede Klasse ein Ausgabeneuron, welches die Wahrscheinlichkeit für die repräsentierte Klasse ausgibt. Dabei muss gelten:
@@ -402,4 +432,57 @@ Die Ausgabe ist dann eine a-posteriori Wahrscheinlichkeit $p(c | x)$, wenn:
 	\item die Trainingsziele $0$ oder $1$ sind
 	\item der Teaching-Input-Vektor $t_{x,i}$ nur in einer Dimension eine $1$ besitzt (und sonst Nullen)
 \end{itemize}
+Für die Ableitung der Softmax-Aktivierungsfunktion gilt:
+\[
+	\frac{\partial f_{act}(x)}{\partial x} 
+		= f_{act}(x) - f_{act}(x)^2
+		= f_{act}(x) (1 - f_{act}(x))
+\]
+
+\subsubsection*{Hyperbolic Tangent (tanh)}
+Der Tangens Hyberbolicus (tanh) hat Ausgabewerte zwischen $-1$ und $1$. Er ist damit die geglättete Version der Sign-Funktion (Vorzeichenfunktion). Es gilt:
+\[
+	f_{act}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+\]
+Für die Ableitung gilt:
+\[
+	\frac{d f_{act}(x)}{dx} =
+		1 - f_{act}(x)^2 = 1 - \frac{(e^x - e^{-x})^2}{(e^x + e^{-x})^2}
+\]
+
+\subsubsection*{Rectifier}
+Der Rectifier als Aktivierungsfunktion ist definiert als:
+\[
+	f_{act}(x) = max(0, x)
+\]
+Diese Funktion kommt der biologischen Aktivierung eines Neurons sehr nahe. Damit können sogenannte \emph{sparse networks}\footnote{Unter einem \emph{sparse network} versteht man ein Neuronales Netz, das weniger Verbindungen hat, als maximal möglich sind.} erzeugt werden.
+Für die Ableitung gilt:
+\[
+	f'_{act}(x) = 
+	\begin{cases}
+		1 &\text{wenn } x > 0 \\
+		0 &\text{wenn } x \le 0
+	\end{cases}
+\]
+
+\subsubsection*{Softplus}
+Die Softplus-Aktivierungsfunktion ist die geglättete Variante des Rectifier. Es gilt:
+\[
+	f_{act}(x) = log(1 + e^x)
+\]
+Der Verlauf ist in Abbildung \ref{fig:ch01_fact-softplus} dargestellt. Für die Ableitung der Softplus-Funktion gilt:
+\[
+	f'_{act}(x) = \frac{e^x}{e^x + 1} = 
+		\underbrace{\frac{1}{1 + e^{-x}}}_{Sigmoid}
+\]
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch01_fact-softplus.png}
+	\caption{Grafische Darstelung von Rectifier und Softplus.}
+	\label{fig:ch01_fact-softplus}
+\end{figure}
+
+\subsubsection*{Maxout}
+
+\subsubsection*{(RBF)}
 
