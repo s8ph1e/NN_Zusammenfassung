@@ -326,12 +326,26 @@ Daher gilt bei $P$ Trainingsbeispielen in einer Epoche folgender Zusammenhang:
 	Err = \sum_{p \in P} Err_p
 \]
 
-\subsection*{Mean Squared Error (MSE)}
-Der Mean-Squared-Error berechnet den spezifischen Fehler $Err_p$ anhand der quadrierten Differenz zwischen erwarteter und tatsächlicher Ausgabe.
+\begin{hint}{Hinweis!}{cost-functions}
+	Im Folgenden wird zwischen \emph{Sum of squared error} (SSE) und \emph{Mean squared error} (MSE) unterschieden.
+	Eine belegbare Quelle konnte ich für diese Unterscheidung nicht finden. Mir scheint es momentan jedoch sinnvoll eine Unterscheidung zu machen, weil ein mittlerer Fehler nur dann Sinn ergibt, wenn man auch durch die Anzahl der Beispiele teilt.
+
+	\begin{flushright}\textit{Beni}\end{flushright}
+\end{hint}
+
+\subsection*{Sum of Squared Error (SSE)}
+Der spezifische Fehler $Err_p$ der Summe der Fehlerquadrate berechnet sich aus der Summe der quadrierten Differenzen zwischen gewünschter Ausgabe $t_{\Omega}$ und tatsächlicher Ausgabe $o_{\Omega}$:
 \[
 	Err_p = \frac{1}{2} \sum_{\Omega \in O} ( t_{\Omega} - o_{\Omega})^2
 \]
 Dabei ist $\Omega$ eines von $O$ Ausgabeneuronen. Der Vorfaktor von $\frac{1}{2}$ dient der vereinfachten Ableitung der Gleichung.
+
+\subsection*{Mean Squared Error (MSE)}
+Der Mean-Squared-Error berechnet den spezifischen Fehler $Err_p$ anhand der quadrierten Differenz zwischen erwarteter und tatsächlicher Ausgabe, geteilt durch die Anzahl der Ausgabeneuronen $|O|$.
+\[
+	Err_p = \frac{1}{2 \cdot |O|} 
+		\sum_{\Omega \in O} ( t_{\Omega} - o_{\Omega})^2
+\]
 
 \subsection*{Euklidischer Abstand}
 Der spezifische Fehler basierend auf dem euklidischen Abstand berechnet sich wie folgt.
