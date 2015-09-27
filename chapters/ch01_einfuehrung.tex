@@ -499,7 +499,34 @@ Für eine Maxout-Unit müssen deshalb $k$ lineare Modelle vorliegen. Die Ausgabe
 $J$ ist dabei die Menge der $1, \ldots, k$ linearen Modelle und $z_{i,j} = x^T W_{\ldots i,j} + b_{i,j}$.
 
 \subsubsection*{Radial Basis Functions (RBFs)}
-% Radial basis functions gelten als gute Funktionsapproximatoren.
-% Diese Funktionen können verschiedene Formen annehmen. Häufig sind aber 
-% https://de.wikipedia.org/wiki/Radiale_Basisfunktion
+% Quelle: http://www.di.unito.it/~botta/didattica/RBF_1.pdf
+% Quelle: https://de.wikipedia.org/wiki/Radiale_Basisfunktion
+Eine radiale Basisfunktion (RBF) ist eine reelle Funktion, deren Wert nur vom Abstand zum Ursprung abhängt. Es gilt
+\[
+	\varphi(x) = \varphi(||x||)
+\]
+Der Name der Funktion kommt daher, dass die Funktion nach dieser Definition radialsymmetrisch ist und darüber hinaus als Basisfunktion bei Funktionsapproximationen dient.
+
+Allgemeiner kann man auch den Abstand zu einem Punkt $c$ (Zentrum) betrachten als:
+\[
+	\varphi(x,c) = \varphi(||x - c||)
+\]
+
+Radiale Basisfunktionen werden in RBF-Netzwerken in den versteckten Neuronen als Aktivierungsfunktion genutzt:
+\[
+	f_{act}(x,c) = \varphi( ||x - c||)
+\]
+
+Sei $r=||x - c||$, dann sind dies häufig verwendete Arten von radialen Basisfunktionen:
+\begin{itemize}
+	\item \emph{Gaußsche RBF (GS)} \\
+	$\varphi(r) = e^{-(\epsilon r)^2}$
+	\item \emph{Multiquadric RBF (MQ)} \\
+	$\varphi(r) = \sqrt{1 + (\epsilon r)^2}$
+	\item \emph{Inverse multiquadric RBF (IMQ)} \\
+	$\varphi(r) = \frac{1}{\sqrt{1 + (\epsilon r)^2}}$
+	\item \emph{Inverse quadric RBF (IQ)} \\
+	$\varphi(r) = \frac{1}{1 + (\epsilon r)^2}$ 
+\end{itemize}
+
 
