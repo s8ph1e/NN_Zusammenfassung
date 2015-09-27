@@ -26,6 +26,34 @@ Mustern gleichzeitig als Vektor präsentiert, diese Teilfolge wird mit der Techn
 
 % ----------------------------------------------------------------------
 % ----------------------------------------------------------------------
+\section*{FFNN vs. RNN}
+% Quelle: http://minds.jacobs-university.de/sites/default/files/uploads/papers/ESNTutorialRev.pdf
+An dieser Stelle soll kurz auf die Unterschiede von \emph{feed-forward neural networks} (FFNNs) und \emph{recurrent neural networks} (RNNs) hingewiesen werden.
+
+Bei FFNNs wird die Aktivierung von den Eingabeneuronen zu den Ausgabeneuronen durchgereicht. Wohingegen RNNs mindestens einen \emph{zyklischen} Pfad von Verbindungen haben. Abbildung \ref{fig:ch04_ffnn-vs-rnn} soll das veranschaulichen.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch04_ffnn-vs-rnn.pdf}
+	\caption{Typische Struktur eines FFNN (links) und eines RNN (rechts).}
+	\label{fig:ch04_ffnn-vs-rnn}
+\end{figure}
+
+\noindent
+Typisch für FFNNs ist:
+\begin{itemize}
+	\item Typischerweise wird die Aktivierung von den Eingabeneuronen zu den Ausgabeneuronen durch einen oder mehrere versteckte Schichten weitergeleitet (MLP).
+	\item Mathematisch gesehen implementieren FFNNs statische Eingabe-Ausgabe-Zuordnungen (Funktionen).
+	\item Eignen sich gut als Approximatoren nichtlinearer Funktion und zur Mustererkennung.
+\end{itemize}
+Typisch für RNNs ist:
+\begin{itemize}
+	\item Zyklische Aktivierung der Neuronen.  
+	\item Mathematisch gesehen implementieren RNNs dynamische Systeme.
+	\item Alle biologischen Neuronale Netze sind rekurrent.
+\end{itemize}
+
+% ----------------------------------------------------------------------
+% ----------------------------------------------------------------------
 \section*{Jordan-Netze}
 Bei Jordan-Netzen wurde eine Netzarchitektur einfacher feedforward-Netze durch \emph{Kontextzellen} erweitert. Diese Kontextzellen dienen der \emph{Speicherung des Ausgabezustands}.
 Eine beispielhafte Architektur ist in Abbildung \ref{fig:ch04_jordan-netze} dargestellt.
