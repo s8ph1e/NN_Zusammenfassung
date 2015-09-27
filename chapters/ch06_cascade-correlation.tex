@@ -1,1 +1,99 @@
-Content here.
+Die \emph{Cascade-Correlation Learning Architecture} ist eine von Scott Fahlman und Christian Lebiere entwickelte Architektur Neuronaler Netze, die sich in einigen Punkten von den bisher behandelten Modellen unterscheidet: Cascade-Correlation bestimmt nicht nur die Gewichte in einem Netzwerk mit festgelegter Topologie, sondern \emph{legt die Topologie des Netzwerks
+mit fest}. Es beginnt mit einem minimalen Netz und fügt während des Trainings jeweils neue verdeckte Neuronen (hidden units) einzeln hinzu.
+Sobald ein neues verdecktes Neuron zum Netzwerk hinzugefügt wird, werden seine Eingangsgewichte eingefroren, so dass dieses Neuron ein Detektor für ein spezielles Teilmuster in der Eingabe bleibt.
+
+Die Cascade-Correlation-Architektur baut damit sehr schnell Netze mit vielen Ebenen auf, die aber immer nur \emph{ein Neuron pro Ebene} besitzen.
+Die Vorteile dieser Architektur sind:
+\begin{itemize}
+	\item Das Lernverfahren lernt Gewichte, \emph{sowie} Größe und Topologie des Netzes.
+	\item Behält einmal gelernte Strukturen bei Änderung der Trainingsmenge bei (Stabilität).
+	\item Keine Rückwärtspropagierung der Fehlersignale nötig.  
+\end{itemize}
+
+Es ist damit für einige Probleme sehr viel schneller als Varianten von Backpropagation.
+
+
+\subsection*{Das Moving-Target-Problem}
+Eines der Probleme von Backpropagation, das Anlass zur Entwicklung von Cascade-Correlation gab, war das \emph{Moving-Target-Problem}: Jedes verdeckte Neuron eines mehrstufigen feedforward-Netzes versucht beim Training gleichzeitig mit den anderen Neuronen zu einem "`nützlichen"' Detektor für ein Teilmuster (\emph{feature}) zu werden, indem es seine Eingangsgewichte entsprechend anpasst.
+Diese Aufgabe wird ihm aber dadurch erschwert, dass sich alle anderen Neuronen gleichzeitig ebenfalls ändern. Die Neuronen einer verdecken Schicht können nicht direkt miteinander kommunizieren, jedes Neuron sieht nur seine eigenen Vorgängerneuronen und die von den Nachfolgeneuronen zurückpropagierten Fehler.
+Dieses Fehlersignal ist das Problem, welches das einzelne Neuron zu lösen (minimieren) versucht, wobei sich aber der Fehlervektor durch die gleichzeitige Adaption aller anderen Neuronen ständig ändert. Diese gleichzeitige Änderung aller Neuronen erschwert die Anpassung für jedes einzelne Neuron.
+
+Eine Möglichkeit, dieses Problem zu beheben, ist, nur wenige Gewichte des Netzwerks gleichzeitig zu ändern und den Rest konstant zu halten.
+Cascade-Correlation verwendet ein Extrem dieser Strategie, indem es nur die Gewichte \emph{eines} Neurons zu jedem Zeitpunkt ändert.
+Man könnte glauben, dass diese Strategie die Geschwindigkeit des Lernens vermindert, aber Messergebnisse zeigen, dass Cascade-Correlation damit für viele Probleme schneller lernt als die bekannten Varianten von Backpropagation.
+
+\subsection*{Der Cascade-Correlation-Algorithmus}
+Der Cascade-Correlation-Algorithmus lässt sich durch zwei Ideen charakterisieren:
+\begin{enumerate}
+	\item \emph{Kaskaden-Architektur} - In ihr werden verdeckte Neuronen einzeln zum Netzwerk hinzugefügt und ihre Eingangsgewichte danach nicht mehr verändert.
+	\item \emph{Lernalgorithmus} - Er erzeugt die versteckten Neuronen und bestimmt deren Gewichte so, dass der Betrag der Korrelation zwischen der Ausgabe des Neurons und dem restlichen Fehlersignal maximal wird. So kann er den Restfehler möglichst stark minimieren.
+\end{enumerate}
+
+\subsubsection*{Kaskaden-Architektur}
+Die Architektur eines Cascade-Correlation-Netzes ist in Abbildung \ref{fig:ch06_cascade-correlation} dargestellt.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch06_cascade-correlation.pdf}
+	\caption{Beispielhafte Cascade-Correlation"--Architektur, vor dem Hinzufügen des dritten verdeckten Neurons. Die vertikalen Verbindungen summieren alle Eingaben auf. Die Gewichte $w_{ij}$ sind als kleine Quadrate dargestellt. Dunkle Quadrate symbolisieren eingefrorene Gewichte, helle Quadrate sind Gewichte, die noch weiter trainiert werden.}
+	\label{fig:ch06_cascade-correlation}
+\end{figure}
+
+Zu Beginn des Trainings existiert nur die durch die Problemstellung vorgegebene Anzahl von Eingabe- und Ausgabezellen, jedoch keine verdeckten Neuronen. Jede Eingabezelle ist mit jeder Ausgabezelle durch eine Verbindung mit trainierbarem Gewicht verbunden (helle Quadrate). Es existiert auch ein "`on"'-Neuron, dessen Ausgabe immer $+1$ ist und das mit allen Ausgabezellen verbunden ist, oder alternativ ein Schwellenwert in jeder dieser Zellen.
+Die Ausgabeneuronen können eine lineare oder eine nichtlineare Aktivierungsfunktion besitzen\footnote{Die meisten Experimente mit Cascade-Correlation wurden bisher mit sigmoiden Aktivierungsfunktionen wie tangens hyperbolicus $tanh(x)$ oder der logistischen Aktivierungsfunktion durchgeführt.}.
+
+
+\subsection*{Lernalgorithmus}
+Das Lernverfahren fügt nun einzeln verdeckte Neuronen zu dem Netzwerk hinzu.
+\begin{itemize}
+	\item Jedes neue Neuron erhält Eingaben von \emph{allen} Vorgängern (Eingabeneuronen und vorher generierte versteckte Neuronen).
+	\item Die Eingabegewichte jedes neuen Neurons werden eingefroren.
+	\item Nur Gewichte zu den Ausgabeneuronen werden weiter trainiert.
+\end{itemize}
+
+Auf diese Art und Weise stellt jedes Neuron der verdeckten Schicht eine Ebene für sich dar. Dies führt zur Erzeugung sehr mächtiger Detektoren für Teilmuster höherer Ordnung, hat jedoch den Nachteil, dass das erzeugte Netzwerk recht tief ist und verdeckte Neuronen einen immer größeren "`fan-in"' erhalten.
+
+Der Lernalgorithmus beginnt zuerst ohne verdeckte Neuronen. Die direkten Verbindungen zwischen Eingabeebene und Ausgabeebene werden über die gesamte Trainingsmenge so gut wie möglich trainiert, beispielsweise durch die Delta-Regel (Widrow-Hoff-Regel) oder durch Quickprop.
+
+Sobald über eine Anzahl von Zyklen keine deutliche Änderung des Fehlers mehr zu beobachten ist wird das Netzwerk ein letztes Mal mit der gesamten Trainingsmenge getestet und der kumulierte Fehler gemessen. 
+
+\begin{itemize}
+	\item Ist dieser klein genug, terminiert das Verfahren ohne Erzeugung verdeckter Neuronen mit einem einstufigen Netzwerk (einer Ebene trainierter Gewichte zwischen Eingabe und Ausgabe).
+	\item Im anderen Fall gibt es einen Restfehler, der durch Einführung eines oder mehrerer verdeckter Neuronen reduziert werden muss. Es wird ein neues verdecktes Neuron dem Netz hinzugefügt, dessen Gewichte der Eingangsverbindungen wie nachfolgend beschrieben bestimmt werden. \\
+	Dieser Vorgang des Hinzufügens wird wiederholt, bis der Fehler klein genug ist (oder bis die maximal tolerierbare Zeit zum Training überschritten wurde).
+\end{itemize}
+
+Zur Erzeugung einer neuen verdeckten Zelle beginnt man mit einer \emph{Kandidatenzelle} $j$, die trainierbare Gewichte von allen Vorgängern erhält, während die Ausgabe noch nicht mit dem Netzwerk verbunden ist.
+Nun erfolgt eine Anzahl Durchläufe durch die gesamte Trainingsmenge, wobei die Eingabegewichte wie folgt beschrieben geändert werden.
+
+Ziel der Änderungen ist es, $S_j$, die Summe der Beträge der Korrelation\footnote{Genaugenommen ist $S$ nicht eine Korrelation, sondern eine Kovarianz, da einige Normalisierungsterme in der Formel fehlen. Tatsächlich funktioniert das Lernverfahren mit der hier angegebenen Kovarianz in den meisten Fällen sogar besser als mit der Korrelation.} zwischen $o_j$, der Ausgabe der Kandidatenzelle, und $\delta_k$,
+dem Restfehler der Ausgabezelle $k$, über alle Ausgabezellen $k$ zu maximieren.
+\[
+	S_j = \sum_k \big | \sum_p (o_{pj} - \bar{o}_j) (\delta_{pk} - \bar{\delta_k}) \big |
+\]
+Dabei ist $j$ der Index der Kandidatenzelle, $k$ der Laufindex über alle Ausgabeneuronen, $p$ der Index der Muster, $\bar{o_j}$ die mittlere Ausgabe von Neuron $j$ über alle Muster $p$ und $\bar{\delta_{pk}}$ der mittlere Fehler von Ausgabezelle $k$ über alle Muster $p$.
+
+Um $S_j$ zu maximieren, muss die partielle Ableitung $\frac{\partial S_j}{\partial w_{ij}}$ berechnet werden. Es gilt:
+\[
+	\frac{\partial S_j}{\partial w_{ij}} = 
+		\sum_k \sum_p \sigma_k \cdot f'_{act}(net_{pj}) \cdot
+		o_{pi} \cdot (\delta_{pk} - \bar{\delta{k}})
+\]
+
+Nachdem der Wert für $\frac{\partial S_j}{\partial w_{ij}}$ für jedes Gewicht von der Eingabezelle $i$ zu der Kandidatenzelle $j$ berechnet wurde, kann man einen \emph{Gradientenaufstieg} durchführen, um $S$ durch die Änderung der Verbindungsgewichte $w_{ij}$ zu maximieren.
+Sobald sich $S$ nicht mehr erhöht, wird das neue verdeckte Neuron als Neuron in das aktive Netzwerk installiert, seine Eingabeverbindungen werden eingefroren und der oben beschriebene Zyklus wird fortgeführt.
+
+Durch den Betrag in der Formel für $S_j$ versucht ein Neuron nicht das Vorzeichen, sondern nur den Betrag der Korrelation seiner Ausgabe mit dem Fehler der Ausgabeneuronen zu maximieren.
+Wenn ein Neuron positiv mit dem Fehler einer Ausgabezelle korreliert, bildet es eine negative Verbindung zu dieser Ausgabezelle aus, die den Fehler vermindert; ist die Korrelation negativ, ist das Gewicht zum Ausgabeneuron positiv.
+
+\subsubsection*{Kandidatengruppen}
+Anstelle eines einzelnen Kandidatenneurons kann man auch eine Gruppe von Kandidatenneuronen trainieren\footnote{Üblich ist eine Gruppengröße von vier bis acht Kandidatenneuronen.}, jede mit einer anderen Menge von Initialgewichten. Da sie nichts miteinander zu tun haben, können alle Kandidatenneuronen \emph{parallel} trainiert werden.
+Das Kandidatenneuron mit der besten Korrelation nach der Trainingsphase wird dann installiert.
+
+Die Verwendung eine Gruppe von Kandidaten ist vorteilhaft:
+\begin{itemize}
+	\item Die Chance, dass ein nutzloser Kandidat, dessen Training selbst (in einem lokalen Maximum) hängen geblieben ist, permanent installiert wird, ist geringer.
+	\item Das Training wird beschleunigt, weil mehrere Teile des Gewichtsraums parallel durchsucht werden können.
+	\item Unterschiedliche Neuronen-Typen (z.B. sigmoid, Gauß, radial) innerhalb einer Gruppe können zu kompakteren und eleganteren Netzwerken führen.
+\end{itemize}
+
+
