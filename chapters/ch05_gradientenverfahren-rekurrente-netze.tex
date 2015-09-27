@@ -93,3 +93,51 @@ Der \emph{Speicherplatzbedarf} beträgt in dieser Realisierung nur noch $O(t_{ma
 Backpropagation Through Time ist ein sehr effizientes Verfahren zum Training beliebiger rekurrenter Netze, wenn die Länge der zeitlichen Muster kleiner oder gleich der Anzahl der Neuronen des Netzwerks ist.
 
 Für sehr lange Eingabesequenzen sind andere Verfahren, beispielsweise Real-Time Recurrent Learning (RTRL) oder die Kombination von BPTT mit RTRL von Schmidhuber besser geeignet.
+
+
+% -----------------------------------------------------------------------
+% -----------------------------------------------------------------------
+\section*{Real-Time Recurrent Learning (RTRL)}
+Real-Time Recurrent Learning ist eine Variante von Backpropagation für rekurrente Netze, die von Williams und Zipser vorgeschlagen wurde. Es verwendet die gleiche Vorwärtsdynamik wie Backpropagation Through Time.
+
+Die eigentlich interessante Version dieses Verfahrens ist die \emph{online}-Version, bei der die Gewichte nach jedem Zeitschritt geändert werden:
+\[
+	w_{ij}(t+1) = w_{ij}(t) + \Delta w_{ij}(t)
+\]
+In diesem Fall werden die Gewichtsänderungen schon durchgeführt, während das Netzwerk sich noch nicht über die volle Zeitsequenz angepasst hat. Dies hat den großen Vorteil, dass keine Begrenzung der Trainingssequenz mehr notwendig ist und keine Epochengrenzen des Trainings mehr eingehalten werden müssen. 
+Es ist also ein online-Lernen in "`Echtzeit"' möglich, was zur Namensgebung Real-Time Recurrent Learning geführt hat.
+
+\begin{hint}{Hinweis!}{rtrl}
+	Das RTRL-Verfahren wurde in der Vorlesung \emph{nicht} behandelt und ist nur aus Gründen der Vollständigkeit und in stark verkürzter Form hier aufgeführt.
+\end{hint}
+
+% -----------------------------------------------------------------------
+% -----------------------------------------------------------------------
+\section*{Kombination von BPTT und RTRL}
+Von J. Schmidhuber stammt ein Verfahren, das durch eine Kombination von BPTT und RTRL eine Beschleunigung der Zeitkomplexität von RTRL um den Faktor $n$ (der Anzahl der Neuronen im rekurrenten Netzwerk) erreicht.
+Alle $n$ Zeitschritte benötigt das hybride Verfahren $O(n^4)$ Operationen, bei den $n$ dazwischenliegenden Zeitschritten dagegen nur jeweils $O(n^2)$ Operationen. Das entspricht einer durchschnittlichen Zeitkomplexität von $O(n^3)$ Operationen pro Zeitschritt.
+
+Auch bei diesem Algorithmus kann man eine offline-Version und eine online- Version unterscheiden: Die offline-Version führt die Gesamtgewichtsänderung nach Abschluss der Präsentation aller Trainingssequenzen aus.
+Die entsprechende online-Version ändert die Gewichte jeweils nach dem vierten Schritt, also jeweils nach Abarbeitung eines Blocks der Zeitdauer $n$.
+
+In verschiedenen Experimenten mit (in erster Linie theoretisch interessanten) Benchmark-Netzen konnte Schmidhuber zeigen, dass seine hybride Methode dem Verfahren RTRL deutlich überlegen war.
+Er empfiehlt aber selbst die Verwendung von RTLR oder des hybriden Verfahrens nur dann, wenn die Länge der Trainingssequenzen sehr lang im Verhältnis zu Anzahl der Knoten des Netzwerks ist. 
+Ist diese Länge kleiner als $n$, dann ist BPTT das bessere Verfahren.
+
+\begin{hint}{Hinweis!}{rtrl}
+	Die Kombination von BPTT und RTRL wurde in der Vorlesung \emph{nicht} behandelt und ist nur aus Gründen der Vollständigkeit und in stark verkürzter Form hier aufgeführt.
+\end{hint}
+
+
+% -----------------------------------------------------------------------
+% -----------------------------------------------------------------------
+\section*{Rekurrentes Backpropagation}
+Darüber hinaus existiert ein Verfahren für Backpropagation für beliebige rekurrente Netze \emph{ohne Zeitbeschränkung}.
+
+Dieses wurde als Zeitabhängige rekurrente Backpropagation (engl. Time-Dependent Recurrent Backpropagation) mit kontinuierlicher Zeit verallgemeinert. Dies ist insbesondere für analoge Realisierungen rekurrenter Backpropagation-Netze und diskrete Simulationen auf Digitalrechnern interessant.
+
+Der Unterschied zwischen rekurrentem Backpropagation und zeitabhängigem rekurrentem Backpropagation liegt darin, dass man bei ersterem annimmt, dass ein stabiler Attraktor existiert, und diesen vom gegebenen Zustand zu finden sucht, während man bei letzterem eine Trajektorie trainiert, die sich auch über Grenzzyklen hinweg zu einem Attraktor bewegen kann. 
+
+\begin{hint}{Hinweis!}{rtrl}
+	Auch diese beiden Themen wurde in der Vorlesung \emph{nicht} behandelt und sind nur aus Gründen der Vollständigkeit und in stark verkürzter Form hier aufgeführt.
+\end{hint}
