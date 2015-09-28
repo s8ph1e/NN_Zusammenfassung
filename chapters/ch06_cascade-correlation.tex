@@ -97,3 +97,87 @@ Die Verwendung eine Gruppe von Kandidaten ist vorteilhaft:
 \end{itemize}
 
 
+\subsection*{Vergleich mit anderen Verfahren}
+\subsubsection*{2-Spiralen-Problem}
+Für den Vergleich von Cross Correlation und anderen Verfahren haben Fahlman und Lebiere das \emph{2-Spiralen-Problem} von A. Wieland genutzt.
+Dieses Problem ist deshalb sehr schwer, weil durch die Verschränkung der Spirale ein feedforward-Netz mit sigmoiden Neuronen mehrere Ebenen verdeckter Neuronen und \emph{shortcut connetctions}\footnote{\emph{Shortcut connections} sind Verbindungen, welche Ebene des Netzes überspringen.} benötigt.
+Abbildung \ref{fig:ch06_2-spiralen-problem} zeigt das 2-Spiralen-Problem und die von Cascade-Correlation gefundenen Separierung.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch06_2-spiralen-problem.pdf}
+	\caption{Trainingspunkte des 2-Spiralen-Problems (links) und Ausgabe eines Netzwerks, das mit Cascade-Correlation trainiert wurde (rechts).}
+	\label{fig:ch06_2-spiralen-problem}
+\end{figure}
+
+\subsubsection*{Ergebnisse}
+Lang und Witbrock konnten mit einem 2-5-5-5-1 feedforward-Netzwerk mit shortcut connections das Problem mit Standard-Backpropagation in 20.000 Epochen lernen, Fahlman mit Backpropagation mit einer modifizierten Fehlerfunktion in 12.000 und mit Quickprop mit 8000 (etwas zeitaufwendigeren) Epochen.
+Mit Cascade-Correlation mit sigmoiden Aktivierungsfunktionen und einer Gruppe von jeweils 8 Kandidatenneuronen wurden bei 100 Trainingsläufen nach Fahlman im Mittel 1700 Epochen benötigt. Dabei wurden zwischen 12 und 19 verdeckte Neuronen durch das Netz gebildet, im Mittel 15.
+
+\subsubsection*{Geschwindigkeitsvorteil von Cascade-Correlation}
+Der tatsächliche Geschwindigkeitsvorteil von Cascade-Correlation ist aus folgenden Gründen noch größer als die Faktoren 5 gegenüber Quickprop und 10 gegenüber Backpropagation aussagen:
+
+\begin{itemize}
+	\item Backpropagation und Quickprop benötigen pro Trainingszyklus eine Vorwärts- \emph{und} Rückwärtspropagierung. Cascade-Correlation nur eine Vorwärtspropagierung.
+	\item Viele Trainingsepochen von Cascade-Correlation finden in den vorläufig trainierten Netzen statt, die noch nicht ihre volle Größe erreicht haben.
+	\item Während die Kandidatenneuronen trainiert werden, bleiben alle Gewichte des aktiven Netzes unverändert. Daher ist es möglich, die Aktivierungen und Fehler einer ganzen Epoche abzuspeichern und die gespeicherten Werte für das Training zu verwenden, anstatt sie für jedes Trainingsmuster neu zu berechnen.
+\end{itemize}
+
+\subsection*{Eigenschaften von Cross-Correlation}
+Cascade-Correlation hat zusammenfassend betrachtet folgende Eigenschaften:
+
+\begin{itemize}
+	\item Das Verfahren findet die \emph{Topologie}\footnote{Mit \emph{Topologie} sind die Anzahl der Schichten und verdeckter Neuronen, sowie deren Verbindungen gemeint.} \emph{des Netzes} automatisch.
+	\item Netze können mit \emph{unterschiedlichen Arten von Neuronen} können generiert und trainiert werden.
+	\item \emph{Schnelles Lernen} (weil kein Moving-Target-Problem)
+	\item Das Verfahren generiert schmale, tiefe Netze, also Detektoren höherer Ordnung für Teilmuster, \emph{ohne die dramatische Abnahme der Trainingsgeschwindigkeit}, wie sie andere Verfahren für tiefe Netze zeigen.
+	\item Cascade-Correlation eignet sich für \emph{inkrementelles Lernen}, d.h. Netze können \emph{nachtrainiert} werden.\footnote{Dies ist möglich, weil einmal gelernte Detektoren nicht zerstört, aber durch Abschwächung der Gewichte zu den Ausgabeneuronen unwichtig gemacht werden können.}
+	\item Weil immer nur eine Ebene von Gewichten trainiert wird, können Aktivierungen und Fehler des Netzes für mehrere Zyklen \emph{gespeichert und wiederverwendet} werden.
+	\item Keine Rückpropagierung von Fehlern notwendig.
+	\item Einfache Parallelisierung mehrerer Kandidaten einer Gruppe möglich.
+\end{itemize}
+
+
+\subsection*{Die Rekurrente Cascade-Correlation-Architektur}
+Die rekurrente Cascade-Correlation-Architektur (RCC) ist eine
+Variante der Cascade-Correlation-Architektur, die aus Beispielen lernen kann, \emph{eine Folge von Eingaben in eine erwünschte Folge von Ausgaben überzuführen}.
+Wie in der Cascade-Correlation-Architektur werden neue Neuronen einzeln zum Netzwerk hinzugefügt. RCC behält die Vorteile von Cascade-Correlation, wie schnelles Lernen, gute Generalisierung und automatische Konstruktion kleiner, effizienter Netzwerke.
+
+Bei rekurrenten Cascade-Correlation-Netzen kann keine vollständige Verbindung zwischen den verdeckten Neuronen realisiert werden, weil dies das Prinzip verletzen würde, dass die Eingangsgewichte einmal etablierter verdeckter Neuronen eingefroren sind und nicht mehr verändert werden können. Daher verwenden die rekurrenten Cascade-Correlation-Netze nur \emph{direkte Rückkopplungen} der verdeckten Neuronen zu sich selbst.
+Dies ist in Abbildung \ref{fig:ch06_2-rcc} dargestellt.
+Die rekurrente Verbindung wird gleichzeitig mit den anderen Gewichten darauf trainiert, die Korrelation des Kandidatenneurons mit dem Restfehler zu maximieren.
+
+\begin{figure}[ht!] \centering 
+	\includegraphics[width=\linewidth]{figures/ch06_rcc.pdf}
+	\caption{Architektur rekurrenter Cascade-Correlation-Netze (links) und ein Kandidatenneuron $j$ mit einer rekurrenten Verbindung zu sich selbst (rechts).}
+	\label{fig:ch06_2-rcc}
+\end{figure}
+
+
+\subsubsection*{Training}
+Das Verhalten eines Kandidatenneurons mit rekurrenter Verbindung zu sich selbst ist im Folgenden aufgeführt.
+
+\begin{itemize}
+	\item \emph{stark positives} Gewicht $w_{jj}$ - Das Kandidatenneuron fungiert als Flip-Flop: Es versucht seinen Zustand beizubehalten, wenn er nicht durch eine starke Netzeingabe geändert wird.
+	\item \emph{stark negatives} Gewicht $w_{jj}$ - Das Kandidatenneuron oszilliert bei jedem Zeitschritt zwischen positiver und negativer Ausgabe. 
+\end{itemize}
+
+Sobald das Kandidatenneuron dem aktiven Netzwerk hinzugefügt wird, wird sein rekurrentes Gewicht ebenso wie die anderen Eingangsverbindungen eingefroren. Auf diese Art und Weise kann jedes verdeckte Neuron als eine Zustandsvariable in einem endlichen Automaten angesehen werden, der speziell für diese Aufgabe gebaut wurde.
+
+Fahlman verwendet meistens die Funktion $f_{act}(x) = tanh(x)$ als Aktivierungsfunktion.
+Während der Trainingsphase werden alle Gewichte $w_{ij}$ so geändert, dass sie die Korrelation des Kandidatenneurons mit dem Restfehler maximieren. Dies erfordert die Berechnung der Ableitung der Ausgabe nach den Gewichten $w_{ij}$ und $w_{jj}$:
+\begin{align*}
+	\frac{\partial}{\partial w_{ij}} o_j(t) &= 
+		f'_{act}(net_j) \Big( o_i(t) + 
+			\frac{\partial}{\partial w_{ij}} o_j(t-1) w_{jj} \Big)
+			\quad i \ne j \\
+	\frac{\partial}{\partial w_{jj}} o_j(t) &= 
+		f'_{act}(net_j) \Big( o_j(t-1) + 
+			\frac{\partial}{\partial w_{jj}} o_j(t-1) w_{jj} \Big)	
+\end{align*}
+\noindent
+Der Term ganz rechts in den Gleichungen gibt den Einfluss des betreffenden Gewichts auf den vorigen Zustand des Neurons an. Da der Wert von im vorhergehenden Schritt berechnet wurde, kann er einfach gespeichert werden und im aktuellen Schritt verwendet werden.
+
+Damit benötigt die rekurrente Version des Verfahrens die Speicherung eines weiteren Wertes für jedes Gewicht und der alten Aktivierung $o_j(t-1)$ des Neurons. Zum Zeitpunkt $t=0$ werden die Ausgaben der Neuronen und alle partiellen Ableitungen als Null angenommen.
+
+In den Benchmarks zeigte sich, dass RCC für die untersuchten Aufgaben leistungsfähiger als Standard-Elman-Netze war, während sich RTRL als etwa gleich leistungsfähig im Vergleich, aber komplexer und für größere Netze als weniger gut geeignet herausstellte.
+
