@@ -44,6 +44,18 @@ Dabei gilt:
 Die Gesamtheit der Gewichte beschreibt den Weg zum nächsten Minimum der Energiefunktion vom aktuellen Netzzustand aus.
 
 
+\subsection*{Energie}
+% Quelle: https://www.youtube.com/watch?v=iQu1ZgmapJQ&list=PLnnr1O8OWc6br8B9iXYFkVJcMc9OnjoZS
+Die Gesamtenergie des Netzes ist die Summe des Produktes eines Verbindungsgewichts $w_{ij}$ und den binären Zuständen $s_i$ und $s_j$ zweier Neuronen $i$ und $j$:
+\[
+	E = - \sum_{i<j} s_i \cdot s_j \cdot w_{ij} - 
+		\underbrace{\sum_i s_i \cdot b_i}_{Bias}
+\]
+Die einfache quadratische Fehlerfunktion ermöglicht es den Einfluss eines einzlenen Neurons auf die Gesamtenergie \emph{lokal} zu berechnen:
+\[
+	\Delta E_i = E(s_i = 0) - E(s_i = 1) = b_i + \sum_j s_j \cdot w_{ij}
+\] 
+
 \subsection*{Zustandsänderungen}
 Die Funktionsweise des einmal trainierten und mit einem Anfangszustand initialisierten Netzes liegt darin, die Zustände $x_k$ der einzelnen Neuronen $k$ mit jedem Zeitschritt nach dem folgenden Schema zu ändern.
 \[
