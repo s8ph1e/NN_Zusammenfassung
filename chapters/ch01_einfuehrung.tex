@@ -484,7 +484,7 @@ Der Verlauf ist in Abbildung \ref{fig:ch01_fact-softplus} dargestellt. Für die 
 
 \subsubsection*{Maxout}
 Die Idee hinter der Maxout-Aktivierungsfunktion ist, dass nicht eine feste Aktivierungsfunktion verwendet wird, sondern eine Aktivierungsfunktion gelernt wird.
-Hierfür werden $k$ paarweise lineare Funktionen aneinander gereiht (siehe Abbildung \ref{fig:ch01_fact-softplus}). So kann jede kontinuierliche Funktion approximiert werden. Das Ergebnis ist eine Funktion, welche - mit Ausnahme von $k-1$ Punkten\footnote{Dies sind die $k-1$ Eckpunkte der verbundenen linearen Funktionen.} - linear und damit auch differenzierbar ist.
+Hierfür werden $k$ stückweise lineare Funktionen aneinander gereiht (siehe Abbildung \ref{fig:ch01_fact-softplus}). So kann jede kontinuierliche Funktion approximiert werden. Das Ergebnis ist eine Funktion, welche - mit Ausnahme von $k-1$ Punkten\footnote{Dies sind die $k-1$ Eckpunkte der verbundenen linearen Funktionen.} - linear und damit auch differenzierbar ist.
 
 \begin{figure}[ht!] \centering 
 	\includegraphics[width=0.7\linewidth]{figures/ch01_maxout-paarweise-lineare-fkt.pdf}
